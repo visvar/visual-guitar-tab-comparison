@@ -1,7 +1,7 @@
 <script>
   import * as d3 from 'd3';
   import { arrayMoveImmutable } from 'array-move';
-  import { onMount } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
   import {
     selectedBar,
     overviewInfo,
@@ -57,6 +57,8 @@
 
   //Creates a bar overview based on the information from TabDisplay Component
   const createBarOverview = (info) => {
+    console.log('overview', info);
+
     let sequence = $apiAlignments.find((element) => element.id === info.id);
 
     if (
@@ -302,7 +304,7 @@
     }
   };
 
-  onMount(() => {
+  afterUpdate(() => {
     setTimeout(() => {
       createBarOverview(info);
     }, 1000);
