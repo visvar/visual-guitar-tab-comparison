@@ -1,0 +1,28 @@
+{
+  "name": "visual-guitar-tab-comparison",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start ": "vite --open",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "upd": "npm-check-updates -u"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.6",
+    "svelte": "^4.2.1",
+    "vite": "^4.4.11"
+  },
+  "dependencies": {
+    "@coderline/alphatab": "^1.2.3",
+    "@saehrimnir/druidjs": "^0.7.3",
+    "array-move": "^4.0.0",
+    "d3": "^7.8.5",
+    "lodash": "^4.17.21",
+    "musicvis-lib": "^0.57.1",
+    "npm-check-updates": "^16.14.6",
+    "seqalign": "^1.0.6"
+  }
+}

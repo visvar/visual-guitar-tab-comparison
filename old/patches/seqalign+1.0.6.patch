@@ -1,0 +1,13 @@
+diff --git a/node_modules/seqalign/src/index.js b/node_modules/seqalign/src/index.js
+index 2214295..8fddbd1 100644
+--- a/node_modules/seqalign/src/index.js
++++ b/node_modules/seqalign/src/index.js
+@@ -8,7 +8,7 @@ module.exports = {
+     NWaligner: AlignerFactory({
+         algorithm: nwAlgorithm,
+         similarityScoreFunctionDefault: (char1, char2) => (char1 === char2 ? 1 : -2),
+-        gapScoreFunctionDefault: () => -1,
++        gapScoreFunctionDefault: () => -2,
+         gapSymbolDefault: '-',
+     }),
+     SWaligner: AlignerFactory({
