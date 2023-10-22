@@ -415,9 +415,30 @@
     let realColorCount = 0;
     let measureCount = 0;
     for (let [key, value] of masterBars) {
-      if (sequence.alignment[key] !== '-') {
-        const measures = value.realBounds;
-        bars
+      /* This is in case empty bars are added */
+      // if (sequence.alignment[key] !== '-') {
+      //   const measures = value.realBounds;
+      //   bars
+      //     .append('rect')
+      //     .attr('class', `coloredMeasure measure${measureCount} version${id}`)
+      //     .attr('x', measures.x)
+      //     .attr('y', measures.y)
+      //     .attr('width', measures.w)
+      //     .attr('height', measures.h)
+      //     .attr(
+      //       'fill',
+      //       $selectedCriteria !== 'techniques'
+      //         ? colors[realColorCount]
+      //         : 'white'
+      //     )
+      //     .attr('stroke', 'black')
+      //     .attr('stroke-width', 1)
+      //     .attr('fill-opacity', 0.2);
+      //   realColorCount++;
+      // }
+      // measureCount++;
+      const measures = value.realBounds;
+      bars
           .append('rect')
           .attr('class', `coloredMeasure measure${measureCount} version${id}`)
           .attr('x', measures.x)
@@ -427,15 +448,12 @@
           .attr(
             'fill',
             $selectedCriteria !== 'techniques'
-              ? colors[realColorCount]
+              ? colors[key]
               : 'white'
           )
           .attr('stroke', 'black')
           .attr('stroke-width', 1)
           .attr('fill-opacity', 0.2);
-        realColorCount++;
-      }
-      measureCount++;
     }
   };
 
@@ -686,7 +704,6 @@
     // Create an array to hold all the promises returned by the forEach loop
     const promises = apis.map((element, i) => {
       let api = element.content;
-      console.log(api);
       return new Promise((resolve) => {
         api.renderFinished.on(() => {
           waitForSvg(svg, main).then((svg) => {
