@@ -57,7 +57,6 @@
 
   //Creates a bar overview based on the information from TabDisplay Component
   const createBarOverview = (info) => {
-    console.log('overview', info);
 
     let sequence = $apiAlignments.find((element) => element.id === info.id);
 
@@ -315,13 +314,13 @@
   <div class="buttons">
     <button
       on:click="{() => moveOverviewUp()}"
-      class="ui icon button arrow"
-      title="Move Tab Up"><i class="angle up icon"></i></button
+      class="move"
+      title="Move Tab Up">↑</button
     >
     <button
       on:click="{() => moveOverviewDown()}"
-      class="ui icon button arrow"
-      title="Move Tab Down"><i class="angle down icon"></i></button
+      class="move"
+      title="Move Tab Down">↓</button
     >
   </div>
   <div class="{`container overview${info.id}`}"></div>
@@ -331,7 +330,7 @@
       class="ui red button remove"
       title="Remove Tab"
     >
-      <i class="minus icon"></i>
+    -
     </button>
   </div>
 </div>
@@ -341,47 +340,23 @@
     display: flex;
     /* margin-bottom: 10px; */
   }
-  .arrow-up {
+
+  .move {
     flex: 1;
-    padding: 3px;
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    transform: rotate(-135deg);
-    margin-right: 5px;
     cursor: pointer;
-  }
-
-  .arrow-down {
-    flex: 1;
-    padding: 3px;
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
     margin-right: 5px;
-    cursor: pointer;
+    width: 20px;
+    background-color: gray;
+    color: white;
   }
-
-  .arrow-fake {
-    flex: 1;
-    padding: 3px;
-    border: none;
-    border-width: 0 3px 3px 0;
-    transform: rotate(45deg);
-    margin-right: 8px;
-  }
-
   .remove {
     flex: 1;
     cursor: pointer;
     margin-right: 5px;
-    font-size: 6px;
+    width: 20px;
+    background-color: red;
+    color: white;
   }
-
-  .arrow {
-    flex: 1;
-    font-size: 7px;
-  }
-
   .container {
     flex: 1;
     margin-right: 10px;

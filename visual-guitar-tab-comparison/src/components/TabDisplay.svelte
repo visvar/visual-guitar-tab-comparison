@@ -62,6 +62,7 @@
       StaveProfile: 'Tab',
       scale: defaultZoom / 100,
       systemsLayoutMode: 'UseModelLayout',
+      padding: [20, 0, 20, 0] // Reduces whitespace between each tab
     },
     core: {
       fontDirectory: './alphatabFont/',
@@ -440,7 +441,7 @@
       const measures = value.realBounds;
       bars
           .append('rect')
-          .attr('class', `coloredMeasure measure${measureCount} version${id}`)
+          .attr('class', `coloredMeasure measure${key} version${id}`)
           .attr('x', measures.x)
           .attr('y', measures.y)
           .attr('width', measures.w)
@@ -630,6 +631,7 @@
     });
   };
 
+  // Works with alphaTab version 1.3.0-alpha.677
   const adjustBarWidth = () => {
     apis.map((element, i) => {
       let api = element.content;
@@ -641,6 +643,7 @@
     });
   };
 
+  // Works with alphaTab version 1.3.0-alpha.677
   const handleBarWidth = async (operation) => {
     if (operation === '+') {
       barWidth = barWidth + barWidthScale;
@@ -793,7 +796,7 @@
 
       const currentRects = d3.selectAll(`.rectBar${positionedBar}`);
       currentRects.attr('stroke', 'red').attr('stroke-width', 2);
-    }, 150);
+    }, 500);
   };
 
   onMount(async () => {
