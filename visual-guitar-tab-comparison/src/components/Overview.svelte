@@ -75,7 +75,8 @@
       const xOffset = 10;
 
       // const maxNumberOfBars = sequenceScore.length;
-      const maxNumberOfBars = sequence.alignment.length;
+      // const maxNumberOfBars = sequence.alignment.length;
+      const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${factorHeight}`;
       // const svg = d3.select(`.overview${info.id}`).append('svg').attr('width', info.numberOfBars * factorWidth).attr('height', 20);
       const svg = d3
