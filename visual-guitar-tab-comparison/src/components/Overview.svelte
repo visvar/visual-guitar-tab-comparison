@@ -10,6 +10,7 @@
     tabOrder,
     currentBar,
     apiAlignments,
+    selectedTechniques
   } from '../store/store';
 
   export let info;
@@ -59,7 +60,8 @@
   const createBarOverview = (info) => {
 
     let sequence = $apiAlignments.find((element) => element.id === info.id);
-
+    const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
+    // const maxNumberOfBars = 500;
     if (
       $selectedCriteria !== '1 on 1 comparison' &&
       $selectedCriteria !== 'techniques'
@@ -76,7 +78,7 @@
 
       // const maxNumberOfBars = sequenceScore.length;
       // const maxNumberOfBars = sequence.alignment.length;
-      const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
+      
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${factorHeight}`;
       // const svg = d3.select(`.overview${info.id}`).append('svg').attr('width', info.numberOfBars * factorWidth).attr('height', 20);
       const svg = d3
@@ -134,6 +136,7 @@
       }
     } else {
       d3.select(`.overview${info.id}`).selectAll('svg').remove();
+      console.log(info.colors)
       const factorWidth = 10;
       const factorHeight = 60;
       const yOffset = 10;
@@ -150,32 +153,6 @@
       let measureCount = 0;
       for (let i = 0; i < sequence.alignment.length; i++) {
         if (sequence.alignment[i] != '-') {
-          let grad = svg
-            .append('defs')
-            .append('linearGradient')
-            .attr('id', `grad${info.id}${realBarCount}`)
-            .attr('x1', '0%')
-            .attr('x2', '0%')
-            .attr('y1', '0%')
-            .attr('y2', '100%');
-
-          grad
-            .selectAll('stop')
-            .data(info.colors[realBarCount])
-            .enter()
-            .append('stop')
-            .style('stop-color', function (d) {
-              return d;
-            })
-            // .attr('offset', function(d,iterator){
-            //     // console.log(iterator)
-            //     if(iterator > 0) {
-            //         // return 100 * (iterator / (info.colors[realBarCount].length - 1)) + '%';
-            //         return '50%'
-            //     }
-            // })
-            .attr('offset', '50%');
-
           svg
             .append('rect')
             .attr('class', `rectOverview rectBar${measureCount}`)
@@ -183,11 +160,38 @@
             .attr('y', 10)
             .attr('width', factorWidth)
             .attr('height', factorHeight - 10)
-            .attr('fill', `url(#grad${info.id}${realBarCount})`)
+            .attr('fill', 'white')
             .attr('stroke', 'black')
             .attr('stroke-width', 0.3)
             .on('click', createClickHandler(realBarCount, info.id));
           // .on('click', () => {getBar(`${i}`)});
+
+          //Stacks the colors inside the bars
+          const group = svg.append('g');
+          const colors = info.colors[realBarCount];
+
+          colors.forEach((color, position) => {
+            group
+              .append('rect')
+              .attr('class', 'technique')
+              .attr('x', i * factorWidth)
+              .attr('y', 10 + position * (factorHeight - 10) / colors.length)
+              .attr('width', factorWidth)
+              .attr('height', (factorHeight - 10) / colors.length)
+              .attr('fill',  function() {
+                if($selectedCriteria === 'techniques') {
+                  if($selectedTechniques.includes(color)) {
+                    return color;
+                  } else {
+                    return 'white';
+                  }
+                } else {
+                  return color;
+                }
+              })
+              .attr('stroke', 'black')
+              .attr('stroke-width', 0.3);
+          });
           realBarCount = realBarCount + 1;
         }
         measureCount++;

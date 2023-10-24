@@ -27,3 +27,5 @@ export const apiAlignments = writable([])
 export const originalTabSizes = writable([])
 
 export const legendInfo = writable({})
+
+export const selectedTechniques = writable([])

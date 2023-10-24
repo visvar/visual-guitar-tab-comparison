@@ -7,6 +7,7 @@
     tabOrder,
     previousCriteria,
     selectedTracks,
+    apiAlignments
   } from '../store/store';
 
   let files = [];
@@ -26,6 +27,7 @@
     $previousCriteria = '';
     $overviewInfo = [];
     $tabOrder = [];
+    $apiAlignments = [];
     arrayBuffers = [];
     const routes = Array.from(files);
 
