@@ -63,7 +63,7 @@
 
 <nav class="container">
   <TrackModal bind:showModal="{showModal}" />
-  <h2 class="title">Tab Visualization</h2>
+  <h2 class="title">Visual Guitar Tab Comparison</h2>
   <div class="button-group">
     <input
       bind:this="{fileBtn}"
@@ -84,7 +84,7 @@
     width: 100%;
     height: 50px;
     align-items: center;
-    border-bottom: 2px solid #888;
+    border-bottom: 1px solid #888;
     background: rgb(142, 184, 219);
   }
 

@@ -56,7 +56,7 @@
       <h2 class="tab-header">Tab Display</h2>
       {#if $tabRoutes.length === 0}
         <div class="ui placeholder segment tab-placeholder">
-          <div class="ui icon header">Upload your tabs and start comparing</div>
+          <div class="ui icon header">Open your tabs and start comparing</div>
         </div>
       {:else}
         <TabDisplay />

@@ -62,7 +62,7 @@
       StaveProfile: 'Tab',
       scale: defaultZoom / 100,
       systemsLayoutMode: 'UseModelLayout',
-      padding: [20, 0, 20, 0] // Reduces whitespace between each tab
+      padding: [20, 0, 20, 0], // Reduces whitespace between each tab
     },
     core: {
       fontDirectory: './alphatabFont/',
@@ -691,6 +691,7 @@
       };
       api = new alphaTab.AlphaTabApi(main, apiSettings);
       // console.log(customApi, 'custooom')
+      console.log(route);
       api.load(route.buffer);
       $selectedTracks.forEach((element) => {
         console.log(element, i);
@@ -889,39 +890,41 @@
     });
   };
 
+  // TODO: FH: commented for now to fix bugs
   const testDownload = () => {
-    const exporter = new alphaTab.exporter.Gp7Exporter();
-    const data = exporter.export(customApi.score, customApi.settings);
-    const a = document.createElement('a');
-    a.download = `${customApi?.score?.title || 'File'}.gp`;
-    a.href = URL.createObjectURL(new Blob([data]));
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // const exporter = new alphaTab.exporter.Gp7Exporter();
+    // const data = exporter.export(customApi.score, customApi.settings);
+    // const a = document.createElement('a');
+    // a.download = `${customApi?.score?.title || 'File'}.gp`;
+    // a.href = URL.createObjectURL(new Blob([data]));
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
   };
 </script>
 
 <div class="main-container">
   <div class="customize-container">
     <div class="bar-size-container">
+      bar width
       <button
         on:click="{() => {
           handleBarWidth('-');
         }}"
         disabled="{barWidth === 100}"
       >
-        smaller
+        -
       </button>
-      bar width
       <button
         on:click="{() => {
           handleBarWidth('+');
         }}"
       >
-        larger
+        +
       </button>
     </div>
     <div class="zoom-container">
+      zoom {`${zoom}% `}
       <button
         on:click="{() => {
           handleZoom('-');
@@ -929,7 +932,6 @@
       >
         -
       </button>
-      zoom {`${zoom}% `}
       <button
         on:click="{() => {
           handleZoom('+');
@@ -984,6 +986,12 @@
   .customize-container {
     display: flex;
   }
+  .customize-container button {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+  }
   .bar-size-container {
     flex: 1;
     margin-top: 10px;
@@ -996,11 +1004,6 @@
     margin-right: 10px;
     display: flex;
     justify-content: flex-end;
-  }
-
-  .legend-container {
-    display: flex;
-    justify-content: center;
   }
 
   .one-on-one-legend {
