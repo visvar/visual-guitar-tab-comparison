@@ -10,7 +10,7 @@
     tabOrder,
     currentBar,
     apiAlignments,
-    selectedTechniques
+    selectedTechniques,
   } from '../store/store';
 
   export let info;
@@ -58,7 +58,6 @@
 
   //Creates a bar overview based on the information from TabDisplay Component
   const createBarOverview = (info) => {
-
     let sequence = $apiAlignments.find((element) => element.id === info.id);
     const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
     // const maxNumberOfBars = 500;
@@ -78,7 +77,7 @@
 
       // const maxNumberOfBars = sequenceScore.length;
       // const maxNumberOfBars = sequence.alignment.length;
-      
+
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${factorHeight}`;
       // const svg = d3.select(`.overview${info.id}`).append('svg').attr('width', info.numberOfBars * factorWidth).attr('height', 20);
       const svg = d3
@@ -109,6 +108,7 @@
             .attr('y', 10)
             .attr('width', factorWidth)
             .attr('height', factorHeight - 10)
+            .attr('rx', 4)
             // .attr("fill", info.colors[alignmentScore[i][1]])
             // .attr("fill", sequenceScore[i])
             .attr('fill', info.colors[realBarCount])
@@ -136,13 +136,15 @@
       }
     } else {
       d3.select(`.overview${info.id}`).selectAll('svg').remove();
-      console.log(info.colors)
+      console.log(info.colors);
       const factorWidth = 10;
       const factorHeight = 60;
       const yOffset = 10;
       const xOffset = 10;
       const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
-      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${factorHeight}`;
+      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
+        factorHeight + 2
+      }`;
       const svg = d3
         .select(`.overview${info.id}`)
         .append('svg')
@@ -160,6 +162,7 @@
             .attr('y', 10)
             .attr('width', factorWidth)
             .attr('height', factorHeight - 10)
+            .attr('rx', 4)
             .attr('fill', 'white')
             .attr('stroke', 'black')
             .attr('stroke-width', 0.3)
@@ -175,12 +178,13 @@
               .append('rect')
               .attr('class', 'technique')
               .attr('x', i * factorWidth)
-              .attr('y', 10 + position * (factorHeight - 10) / colors.length)
+              .attr('y', 10 + (position * (factorHeight - 10)) / colors.length)
               .attr('width', factorWidth)
               .attr('height', (factorHeight - 10) / colors.length)
-              .attr('fill',  function() {
-                if($selectedCriteria === 'techniques') {
-                  if($selectedTechniques.includes(color)) {
+              .attr('rx', 4)
+              .attr('fill', function () {
+                if ($selectedCriteria === 'techniques') {
+                  if ($selectedTechniques.includes(color)) {
                     return color;
                   } else {
                     return 'white';
@@ -275,6 +279,9 @@
   };
 
   const removeTab = () => {
+    if (!confirm('Remove this tab?')) {
+      return;
+    }
     const mainTabsDiv = document.querySelector('.alphaTab');
     const childrenOfTabs = mainTabsDiv.childNodes;
 
@@ -320,13 +327,17 @@
     <button
       on:click="{() => moveOverviewUp()}"
       class="move"
-      title="Move Tab Up">↑</button
+      title="Move Tab Up"
     >
+      ↑
+    </button>
     <button
       on:click="{() => moveOverviewDown()}"
       class="move"
-      title="Move Tab Down">↓</button
+      title="Move Tab Down"
     >
+      ↓
+    </button>
   </div>
   <div class="{`container overview${info.id}`}"></div>
   <div>
@@ -335,7 +346,7 @@
       class="ui red button remove"
       title="Remove Tab"
     >
-    -
+      X
     </button>
   </div>
 </div>
@@ -359,7 +370,7 @@
     cursor: pointer;
     margin-right: 5px;
     width: 20px;
-    background-color: red;
+    background-color: crimson;
     color: white;
   }
   .container {
