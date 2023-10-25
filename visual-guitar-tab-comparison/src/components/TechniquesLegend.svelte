@@ -50,7 +50,7 @@
   </div>
   <div>
     <input type="checkbox" style="accent-color: lime" checked on:change={(e) => handleCheckboxChange(e, 'lime')}/>
-    gohst note
+    ghost note
   </div>
 </div>
 
