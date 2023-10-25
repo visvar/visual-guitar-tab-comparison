@@ -232,6 +232,12 @@ export function getTechniquesColors (noteCollection) {
         if (notes.isStaccato) {
           barCollection.push('#ffff33')
         }
+        if (notes.slideOrigin != null || notes.slideTarget != null) {
+          barCollection.push('lightblue')
+        }
+        if (notes.isGhost) {
+          barCollection.push('lime')
+        }
       })
       if (barCollection.length == 0) {
         tempCollection.push(['white'])

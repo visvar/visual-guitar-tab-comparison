@@ -1,7 +1,7 @@
 <script>
   import { selectedTechniques } from '../store/store';
   import { onMount } from 'svelte';
-  let selectedColors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33'];
+  let selectedColors = ['#e41a1c', '#377eb8', '#4daf4a', '#984ea3', '#ff7f00', '#ffff33', 'lightblue', 'lime'];
 
   const handleCheckboxChange = (event, color) => {
     if (event.target.checked) {
@@ -43,6 +43,14 @@
   <div>
     <input type="checkbox" style="accent-color: #ffff33" checked on:change={(e) => handleCheckboxChange(e, '#ffff33')}/>
     staccato
+  </div>
+  <div>
+    <input type="checkbox" style="accent-color: lightblue" checked on:change={(e) => handleCheckboxChange(e, 'lightblue')}/>
+    slide
+  </div>
+  <div>
+    <input type="checkbox" style="accent-color: lime" checked on:change={(e) => handleCheckboxChange(e, 'lime')}/>
+    gohst note
   </div>
 </div>
 

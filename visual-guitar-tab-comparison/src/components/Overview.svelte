@@ -136,7 +136,6 @@
       }
     } else {
       d3.select(`.overview${info.id}`).selectAll('svg').remove();
-      console.log(info.colors);
       const factorWidth = 10;
       const factorHeight = 60;
       const yOffset = 10;

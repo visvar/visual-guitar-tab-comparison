@@ -483,6 +483,9 @@
                 isDead: false,
                 isPalmMute: false,
                 isStaccato: false,
+                slideOrigin: null,
+                slideTarget: null,
+                isGhost: false,
                 isChord: '',
                 beat: beatNumber,
                 x: '',
@@ -507,6 +510,9 @@
                   isDead: noteElement.note.isDead,
                   isPalmMute: noteElement.note.isPalmMute,
                   isStaccato: noteElement.note.isStaccato,
+                  slideOrigin: noteElement.note.slideOrigin,
+                  slideTarget: noteElement.note.slideTarget,
+                  isGhost: noteElement.note.isGhost,
                   isChord: '0',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -532,6 +538,9 @@
                   isDead: noteElement.note.isDead,
                   isPalmMute: noteElement.note.isPalmMute,
                   isStaccato: noteElement.note.isStaccato,
+                  slideOrigin: noteElement.note.slideOrigin,
+                  slideTarget: noteElement.note.slideTarget,
+                  isGhost: noteElement.note.isGhost,
                   isChord: '1',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -564,6 +573,9 @@
         isDead: obj.isDead,
         isPalmMute: obj.isPalmMute,
         isStaccato: obj.isStaccato,
+        slideOrigin: obj.slideOrigin,
+        slideTarget: obj.slideTarget,
+        isGhost: obj.isGhost,
         isChord: obj.isChord,
         beat: obj.beat,
         x: obj.x,
@@ -694,7 +706,6 @@
       console.log(route);
       api.load(route.buffer);
       $selectedTracks.forEach((element) => {
-        console.log(element, i);
         if (i === element.api) {
           api.renderTracks([
             api.score.tracks.find((e) => e.name === element.name),
