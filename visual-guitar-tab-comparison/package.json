@@ -23,6 +23,7 @@
     "lodash": "^4.17.21",
     "musicvis-lib": "^0.57.1",
     "npm-check-updates": "^16.14.6",
-    "seqalign": "^1.0.6"
+    "seqalign": "^1.0.6",
+    "svelte-split-pane": "^0.1.2"
   }
 }

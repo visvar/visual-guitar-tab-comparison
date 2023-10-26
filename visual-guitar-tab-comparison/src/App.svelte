@@ -4,6 +4,8 @@
   import TopBar from './components/TopBar.svelte';
   import Overview from './components/Overview.svelte';
   import SplitPane from './components/SplitPane.svelte';
+  import { HSplitPane, VSplitPane } from 'svelte-split-pane';
+  // import VSplitPane from './components/VSplitPane.svelte';
   import Dropdown from './components/Dropdown.svelte';
   import TechniquesLegend from './components/TechniquesLegend.svelte';
   import {
@@ -17,7 +19,7 @@
 
 <div class="main-container">
   <TopBar />
-  <SplitPane minWidth="{50}">
+  <!-- <SplitPane minWidth="{50}">
     <div class="comparison-container" slot="left">
       <div class="comparison-block">
         <h2 class="overview-header">Tab Overview</h2>
@@ -62,10 +64,63 @@
         <TabDisplay />
       {/if}
     </div>
-  </SplitPane>
+  </SplitPane> -->
+  <VSplitPane  >
+    <top  slot="top">
+      <div class="comparison-container">
+        <div class="comparison-block">
+          <h2 class="overview-header">Tab Overview</h2>
+          {#if $overviewInfo.length === 0}
+            <div class="ui placeholder segment">
+              <div class="ui icon header">
+                Select a metric to see an overview for each tab
+              </div>
+            </div>
+          {:else}
+            {#each $overviewInfo as info}
+              <Overview info="{info}" />
+            {/each}
+          {/if}
+        </div>
+        <div class="legend-container">
+          {#if $selectedCriteria !== 'similarity' && $selectedCriteria !== '1 on 1 comparison' && $selectedCriteria !== 'techniques' && $selectedCriteria !== ''}
+            <ColorLegend
+              color="{d3.scaleSequential(
+                [$legendInfo.minForLegend, $legendInfo.maxForLegend],
+                $legendInfo.colorScaleForLegend
+              )}"
+              title="{$selectedCriteria}"
+            />
+          {/if}
+        </div>
+        <div class="comparison-block">
+          <h2 class="overview-header">Metric</h2>
+          <Dropdown />
+        </div>
+        {#if $selectedCriteria === 'techniques'}
+          <TechniquesLegend />
+        {/if}
+      </div>
+    </top >
+    <down  slot="down">
+      <div class="track-container">
+        <h2 class="tab-header">Tab Display</h2>
+        {#if $tabRoutes.length === 0}
+          <div class="ui placeholder segment tab-placeholder">
+            <div class="ui icon header">Open your tabs and start comparing</div>
+          </div>
+        {:else}
+          <TabDisplay />
+        {/if}
+      </div>
+    </down >
+  </VSplitPane>
 </div>
 
 <style>
+  .main-container {
+    min-height: 1200px;
+  }
   .comparison-container {
     display: flex;
     flex-direction: column;
@@ -83,7 +138,8 @@
 
   .track-container {
     overflow-y: auto;
-    position: relative; /* Add position relative */
+    position: relative;
+    height: 800px; 
   }
 
   .tab-placeholder {
