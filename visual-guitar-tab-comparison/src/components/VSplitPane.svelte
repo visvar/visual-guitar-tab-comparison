@@ -66,10 +66,13 @@
   <svelte:window on:mousemove="{handleMouseMove}" on:mouseup="{handleMouseUp}" />
   <div
     bind:clientHeight="{containerH}"
-    class="{isMouseDown ? 'disable-select' : ''} track-container"
+    class="{isMouseDown ? 'disable-select' : ''}"
   >
-    <div style="height:{topH}px" class="pane">
+    <div style="height:{topH}px" id="top">
       <slot name="top"></slot>
+      {#if isMouseDown}
+      <div class="window-hook"></div>
+    {/if}
     </div>
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
@@ -77,13 +80,16 @@
       id="splitter"
       style="height:{splitterHeight}px"
     ></div>
-    <div style="height:{bottomH}px" class="pane">
+    <div style="height:{bottomH}px" id="bottom">
       <slot name="bottom"></slot>
+      {#if isMouseDown}
+      <div class="window-hook"></div>
+    {/if}
     </div>
   </div>
   
   <style>
-    .track-container {
+    .first-section {
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -91,6 +97,14 @@
   
     .pane {
       flex: 1;
+    }
+
+    #top {
+        height: 100%;
+    }
+
+    #bottom{
+        height: 100%;
     }
   
     #splitter {

@@ -339,7 +339,7 @@
     </button>
   </div>
   <div class="{`container overview${info.id}`}"></div>
-  <div>
+  <div class="buttons">
     <button
       on:click="{() => removeTab()}"
       class="ui red button remove"
@@ -354,6 +354,12 @@
   .grid {
     display: flex;
     /* margin-bottom: 10px; */
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .move {

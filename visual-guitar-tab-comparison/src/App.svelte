@@ -4,7 +4,7 @@
   import TopBar from './components/TopBar.svelte';
   import Overview from './components/Overview.svelte';
   import SplitPane from './components/SplitPane.svelte';
-  import { HSplitPane, VSplitPane } from 'svelte-split-pane';
+  import { VSplitPane } from 'svelte-split-pane';
   import TechniquesLegend from './components/TechniquesLegend.svelte';
   import {
     overviewInfo,
@@ -59,14 +59,14 @@
       {/if}
     </div>
   </SplitPane> -->
-  <VSplitPane  >
+  <VSplitPane >
     <top  slot="top">
       <div class="comparison-container">
         <div class="comparison-block">
           <h2 class="overview-header">Tab Overview</h2>
           {#if $overviewInfo.length === 0}
-            <div class="ui placeholder segment">
-              <div class="ui icon header">
+            <div>
+              <div>
                 Select a metric to see an overview for each tab
               </div>
             </div>
@@ -87,17 +87,13 @@
             />
           {/if}
         </div>
-        <div class="comparison-block">
-          <h2 class="overview-header">Metric</h2>
-          <Dropdown />
-        </div>
         {#if $selectedCriteria === 'techniques'}
           <TechniquesLegend />
         {/if}
       </div>
     </top >
-    <down  slot="down">
-      <div class="track-container">
+    <down slot="down">
+      <div class="track-container" >
         <h2 class="tab-header">Tab Display</h2>
         {#if $tabRoutes.length === 0}
           <div class="ui placeholder segment tab-placeholder">
@@ -118,22 +114,24 @@
   .comparison-container {
     display: flex;
     flex-direction: column;
+    height: auto;
   }
 
   .comparison-block {
     flex: 1;
     /* overflow-x: auto;
       overflow-y: auto; */
-    max-width: 100vw;
+    /* max-width: 100vw;
     max-height: 100vh;
     margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 10px; */
   }
 
   .track-container {
     overflow-y: auto;
     position: relative;
-    height: 800px; 
+    height: auto;
+    background-color: white;
   }
 
   .tab-placeholder {

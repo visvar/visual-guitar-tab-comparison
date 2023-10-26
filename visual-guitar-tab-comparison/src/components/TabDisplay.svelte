@@ -992,7 +992,7 @@
     overflow-y: auto;
     width: 100%;
     /* overflow-x: scroll; */
-    height: 80vh;
+    height: 70vh;
   }
   .customize-container {
     display: flex;
