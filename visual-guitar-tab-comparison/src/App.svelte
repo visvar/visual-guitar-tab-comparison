@@ -4,7 +4,6 @@
   import TopBar from './components/TopBar.svelte';
   import Overview from './components/Overview.svelte';
   import SplitPane from './components/SplitPane.svelte';
-  import Dropdown from './components/Dropdown.svelte';
   import TechniquesLegend from './components/TechniquesLegend.svelte';
   import {
     overviewInfo,
@@ -43,10 +42,6 @@
             title="{$selectedCriteria}"
           />
         {/if}
-      </div>
-      <div class="comparison-block">
-        <h2 class="overview-header">Metric</h2>
-        <Dropdown />
       </div>
       {#if $selectedCriteria === 'techniques'}
         <TechniquesLegend />

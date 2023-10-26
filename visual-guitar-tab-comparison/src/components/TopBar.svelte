@@ -7,8 +7,9 @@
     tabOrder,
     previousCriteria,
     selectedTracks,
-    apiAlignments
+    apiAlignments,
   } from '../store/store';
+  import Dropdown from './Dropdown.svelte';
 
   let files = [];
   let arrayBuffers = [];
@@ -76,9 +77,17 @@
     <button on:click="{() => fileBtn.click()}"> open files </button>
     <button on:click="{() => (showModal = true)}"> select tracks </button>
   </div>
+  <!-- svelte-ignore a11y-label-has-associated-control -->
+  <label>
+    <span>Metric</span><Dropdown />
+  </label>
 </nav>
 
 <style>
+  nav {
+    color: #111;
+  }
+
   .container {
     display: flex;
     width: 100%;
@@ -99,5 +108,11 @@
 
   input[type='file'] {
     display: none;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
   }
 </style>
