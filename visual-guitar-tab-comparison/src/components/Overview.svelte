@@ -31,6 +31,7 @@
 
   const createClickHandler = (barCount, infoId) => {
     return function () {
+      console.log('holaa')
       // getBar(`${barCount}${infoId}`);
       getBar(`${barCount}`);
       // highlightBar(barCount)
@@ -193,7 +194,8 @@
                 }
               })
               .attr('stroke', 'black')
-              .attr('stroke-width', 0.3);
+              .attr('stroke-width', 0.3)
+              .on('click', createClickHandler(realBarCount, info.id));
           });
           realBarCount = realBarCount + 1;
         }
