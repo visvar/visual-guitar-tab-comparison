@@ -98,7 +98,7 @@
 
 <style>
   .main-container {
-    min-height: 1200px;
+    /* min-height: 1200px; */
   }
   .comparison-container {
     display: flex;
