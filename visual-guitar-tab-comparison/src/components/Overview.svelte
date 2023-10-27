@@ -41,15 +41,6 @@
     };
   };
 
-  const highlightBar = (bar) => {
-    let previousHihlightedBar = $currentBar;
-    const previousRects = d3.selectAll(`.rectBar${previousHihlightedBar}`);
-    previousRects.attr('stroke', 'black').attr('stroke-width', 0.3);
-    const currentRects = d3.selectAll(`.rectBar${bar}`);
-    currentRects.attr('stroke', 'red').attr('stroke-width', 5);
-    $currentBar = bar;
-  };
-
   //Gets the clicked bar and updates the store
   const getBar = (bar) => {
     $selectedBar = bar;
@@ -64,7 +55,6 @@
   const createBarOverview = (info) => {
     let sequence = $apiAlignments.find((element) => element.id === info.id);
     const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
-    // const maxNumberOfBars = 500;
     if (
       $selectedCriteria !== '1 on 1 comparison' &&
       $selectedCriteria !== 'techniques'
@@ -76,12 +66,6 @@
       d3.select(`.overview${info.id}`).selectAll('svg').remove();
       const factorWidth = 10;
       const factorHeight = 60;
-      const yOffset = 10;
-      const xOffset = 10;
-
-      // const maxNumberOfBars = sequenceScore.length;
-      // const maxNumberOfBars = sequence.alignment.length;
-
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
         factorHeight * 1.1
       }`;
@@ -132,20 +116,12 @@
           realBarCount = realBarCount + 1;
         }
         measureCount++;
-        // if( (i + 1) % 5 == 0) {
-        //     svg.append('text')
-        //         .attr('x', i * factorWidth)
-        //         .attr('y', 8)
-        //         .attr('font-size', 10)
-        //         .text(i + 1);
-        // }
+        addBarLabel(i, svg, factorWidth);
       }
     } else {
       d3.select(`.overview${info.id}`).selectAll('svg').remove();
       const factorWidth = 10;
       const factorHeight = 60;
-      const yOffset = 10;
-      const xOffset = 10;
       const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
         factorHeight * 1.1
@@ -172,7 +148,6 @@
             .attr('stroke', 'black')
             .attr('stroke-width', 0.3)
             .on('click', createClickHandler(realBarCount, info.id));
-          // .on('click', () => {getBar(`${i}`)});
 
           //Stacks the colors inside the bars
           const group = svg.append('g');
@@ -205,6 +180,7 @@
           realBarCount = realBarCount + 1;
         }
         measureCount++;
+        addBarLabel(i, svg, factorWidth);
       }
     }
   };
@@ -324,8 +300,25 @@
   afterUpdate(() => {
     setTimeout(() => {
       createBarOverview(info);
-    }, 1000);
+    }, 500);
   });
+
+  /**
+   * Adds the bar number to every 5th bar
+   * @param i
+   * @param svg
+   * @param factorWidth
+   */
+  function addBarLabel(i, svg, factorWidth) {
+    if ((i + 1) % 5 == 0) {
+      svg
+        .append('text')
+        .attr('x', i * factorWidth)
+        .attr('y', 8)
+        .attr('font-size', 10)
+        .text(i + 1);
+    }
+  }
 </script>
 
 <div class="{`grid wrappedOverview${info.id}`}">

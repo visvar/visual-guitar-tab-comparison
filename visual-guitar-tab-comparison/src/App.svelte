@@ -104,10 +104,12 @@
     display: flex;
     flex-direction: column;
     height: auto;
+    min-height: 50px;
   }
 
   .comparison-block {
     flex: 1;
+    padding-top: 8px;
     /* overflow-x: auto;
       overflow-y: auto; */
     /* max-width: 100vw;

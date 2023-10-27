@@ -810,7 +810,7 @@
       previousRects.attr('stroke', 'black').attr('stroke-width', 0.3);
 
       const currentRects = d3.selectAll(`.rectBar${positionedBar}`);
-      currentRects.attr('stroke', 'red').attr('stroke-width', 2);
+      currentRects.attr('stroke', 'steelblue').attr('stroke-width', 4);
     }, 500);
   };
 
