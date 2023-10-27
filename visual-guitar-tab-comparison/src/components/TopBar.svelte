@@ -37,9 +37,11 @@
       const arrayBuffer = await readFileAsArrayBuffer(route);
       arrayBuffers.push({
         id: i,
+        fileName: route.name,
         buffer: arrayBuffer,
       });
     }
+    console.log(arrayBuffers);
 
     $tabRoutes = arrayBuffers;
   };
@@ -80,7 +82,8 @@
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <div>
     <label>
-      <span>Metric</span><Dropdown />
+      <span>metric</span>
+      <Dropdown />
     </label>
   </div>
   <div>

@@ -935,7 +935,7 @@
       </button>
     </div>
     <div class="zoom-container">
-      zoom {`${zoom}% `}
+      zoom
       <button
         on:click="{() => {
           handleZoom('-');
@@ -958,7 +958,6 @@
         <div>
           <OneOnOneLegend />
         </div>
-        <br />
         <div>
           <BeatNoteSelector on:selectedOptions="{handleBeatNoteSelection}" />
         </div>
@@ -989,10 +988,9 @@
   }
 
   .tab-container {
-    overflow-y: auto;
     width: 100%;
-    /* overflow-x: scroll; */
-    /* height: 70vh; */
+    overflow-y: auto;
+    overflow-x: scroll;
   }
   .customize-container {
     display: flex;
@@ -1000,9 +998,7 @@
     margin: 10px 10px 0 10px;
   }
   .customize-container button {
-    width: 25px;
-    height: 25px;
-    text-align: center;
+    padding: 0 8px 2px 8px;
   }
   .zoom-container {
     display: flex;

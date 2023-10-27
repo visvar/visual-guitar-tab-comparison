@@ -1,5 +1,5 @@
 <script>
-  import { alphaApis, selectedTracks } from '../store/store';
+  import { alphaApis, selectedTracks, tabRoutes } from '../store/store';
   export let showModal; // boolean
 
   let dialog; // HTMLDialogElement
@@ -25,6 +25,8 @@
     dialog.close();
     chosenTracks = [];
   };
+
+  const file = (api) => $tabRoutes.filter((d) => d.id === api.id)[0].fileName;
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
@@ -36,12 +38,15 @@
 >
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div on:click|stopPropagation on:keypress="{() => console.log('hola')}">
-    <h2>Select the tracks for each version</h2>
+    <h2>Select one track for each version</h2>
     {#if $alphaApis.length > 0}
       <div class="grid">
         {#each $alphaApis as api, i}
           <div>
-            Version {i + 1}
+            {i + 1}
+          </div>
+          <div title="{file(api)}">
+            {file(api).substring(0, 30)}
           </div>
           <select
             class="version-select"
@@ -65,7 +70,7 @@
   </div>
   <div class="button-group">
     <button class="ui primary button" on:click="{() => handleChanges()}">
-      save Changes
+      apply
     </button>
     <button class="ui button" on:click="{() => cancelChanges()}">
       cancel
@@ -75,14 +80,15 @@
 
 <style>
   dialog {
-    max-width: 32em;
+    /* max-width: 32em; */
     border-radius: 0.2em;
     border: none;
     padding: 0;
+    user-select: none;
   }
   div.grid {
     display: grid;
-    grid-template-columns: 100px auto;
+    grid-template-columns: 20px auto auto;
     align-items: start;
   }
   dialog::backdrop {

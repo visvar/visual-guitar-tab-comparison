@@ -11,9 +11,12 @@
     currentBar,
     apiAlignments,
     selectedTechniques,
+    tabRoutes,
   } from '../store/store';
 
   export let info;
+
+  const fileName = $tabRoutes.filter((d) => d.id === info.id)[0].fileName;
 
   // let mainDiv;
 
@@ -43,7 +46,7 @@
     const previousRects = d3.selectAll(`.rectBar${previousHihlightedBar}`);
     previousRects.attr('stroke', 'black').attr('stroke-width', 0.3);
     const currentRects = d3.selectAll(`.rectBar${bar}`);
-    currentRects.attr('stroke', 'red').attr('stroke-width', 2);
+    currentRects.attr('stroke', 'red').attr('stroke-width', 5);
     $currentBar = bar;
   };
 
@@ -327,17 +330,13 @@
 
 <div class="{`grid wrappedOverview${info.id}`}">
   <div class="buttons">
-    <button
-      on:click="{() => moveOverviewUp()}"
-      class="move"
-      title="Move Tab Up"
-    >
+    <button on:click="{() => moveOverviewUp()}" class="move" title="Move up">
       ↑
     </button>
     <button
       on:click="{() => moveOverviewDown()}"
       class="move"
-      title="Move Tab Down"
+      title="Move down"
     >
       ↓
     </button>
@@ -347,7 +346,7 @@
     <button
       on:click="{() => removeTab()}"
       class="ui red button remove"
-      title="Remove Tab"
+      title="Remove {fileName}"
     >
       X
     </button>
@@ -357,13 +356,14 @@
 <style>
   .grid {
     display: flex;
-    /* margin-bottom: 10px; */
   }
 
   .buttons {
-    display: flex;
+    padding: 2px 0;
+    display: grid;
     justify-content: center;
     align-items: center;
+    font-size: 12px;
   }
 
   .move {
@@ -379,7 +379,7 @@
     cursor: pointer;
     margin-right: 5px;
     width: 20px;
-    background-color: crimson;
+    background-color: rgb(112, 24, 24);
     color: white;
   }
   .container {
