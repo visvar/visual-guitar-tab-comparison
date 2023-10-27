@@ -996,24 +996,17 @@
   }
   .customize-container {
     display: flex;
+    align-items: center;
+    margin: 10px 10px 0 10px;
   }
   .customize-container button {
-    border-radius: 50%;
     width: 25px;
     height: 25px;
     text-align: center;
   }
-  .bar-size-container {
-    flex: 1;
-    margin-top: 10px;
-    margin-left: 10px;
-  }
-
   .zoom-container {
-    flex: 1;
-    margin-top: 10px;
-    margin-right: 10px;
     display: flex;
+    flex: 1;
     justify-content: flex-end;
   }
 

@@ -1,5 +1,4 @@
 <script>
-
 </script>
 
 <div>
@@ -11,24 +10,20 @@
           </tr>
         </thead> -->
         <tbody>
-          <tr>
-            <td>
-                <svg width="10" height="10">
-                    <rect width="10" height="10" fill="blue"/>
-                </svg>
-            </td>
-            <td>
-                Added in alternate version
-            </td>
-            <td>
-                <svg width="10" height="10">
-                    <rect width="10" height="10" fill="orange"/>
-                </svg>
-            </td>
-            <td>
-                Modified in alternate version
-            </td>
-            <!-- <td>
+            <tr>
+                <td>
+                    <svg width="10" height="10">
+                        <rect width="10" height="10" fill="blue"></rect>
+                    </svg>
+                </td>
+                <td> added in alternate version </td>
+                <td>
+                    <svg width="10" height="10">
+                        <rect width="10" height="10" fill="orange"></rect>
+                    </svg>
+                </td>
+                <td> modified in alternate version </td>
+                <!-- <td>
                 <svg width="10" height="10">
                     <rect width="10" height="10" fill="red"/>
                 </svg>
@@ -36,8 +31,8 @@
             <td>
                 Removed from main version
             </td> -->
-          </tr>
-          <!-- <tr>
+            </tr>
+            <!-- <tr>
             <td>
                 <svg width="10" height="10">
                     <rect width="10" height="10" fill="orange"/>
@@ -54,5 +49,5 @@
             <td>Denied</td>
           </tr> -->
         </tbody>
-      </table>
+    </table>
 </div>

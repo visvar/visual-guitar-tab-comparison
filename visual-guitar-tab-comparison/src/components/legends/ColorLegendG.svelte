@@ -4,8 +4,8 @@
   //    Released under the ISC license.
   //    https://observablehq.com/@d3/color-legend
 
-  import * as d3 from "d3";
-  import { afterUpdate, beforeUpdate, tick } from "svelte";
+  import * as d3 from 'd3';
+  import { afterUpdate, beforeUpdate, tick } from 'svelte';
 
   export let color;
   export let title;
@@ -16,18 +16,18 @@
   export let ticks = width / 64;
 
   let marginTop = 18;
-  let marginRight = 0;
+  let marginRight = 10;
   let marginBottom = 16 + tickSize;
-  let marginLeft = 0;
-  let height = 44 + tickSize;
+  let marginLeft = 10;
+  let height = 42 + tickSize;
 
   let axisGroup;
 
   const ramp = (color, n = 256) => {
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = n;
     canvas.height = 1;
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext('2d');
     for (let i = 0; i < n; ++i) {
       context.fillStyle = color(i / (n - 1));
       context.fillRect(i, 0, 1, 1);
@@ -99,8 +99,8 @@
             .range(n)
             .map((i) => d3.quantile(color.domain(), i / (n - 1)));
         }
-        if (typeof tickFormat !== "function") {
-          tickFormat2 = d3.format(tickFormat === undefined ? ",f" : tickFormat);
+        if (typeof tickFormat !== 'function') {
+          tickFormat2 = d3.format(tickFormat === undefined ? ',f' : tickFormat);
         }
       }
     } else if (color.invertExtent) {
@@ -113,7 +113,7 @@
       const thresholdFormat =
         tickFormat === undefined
           ? (d) => d
-          : typeof tickFormat === "string"
+          : typeof tickFormat === 'string'
           ? d3.format(tickFormat)
           : tickFormat;
       x = d3
@@ -137,17 +137,17 @@
     await tick();
     const g = d3.select(axisGroup);
     // Remove axis line
-    g.select(".domain").remove();
+    g.select('.domain').remove();
     // Adjust ticks?
     if (adjustTicks) {
-      g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+      g.selectAll('.tick line').attr('y1', marginTop + marginBottom - height);
     }
   });
 </script>
 
 <g>
   <g class="title">
-    <text x={marginLeft} y={marginTop + marginBottom - height + 23}>
+    <text x="{marginLeft}" y="{marginTop + marginBottom - height + 23}">
       {title}
     </text>
   </g>
@@ -155,63 +155,58 @@
     {#if color.interpolate}
       <!-- continuous -->
       <image
-        x={marginLeft}
-        y={marginTop}
-        width={width - marginLeft - marginRight}
-        height={colorHeight}
-        preserveAspectRatio={"none"}
-        xlink:href={ramp(
+        x="{marginLeft}"
+        y="{marginTop}"
+        width="{width - marginLeft - marginRight}"
+        height="{colorHeight}"
+        preserveAspectRatio="{'none'}"
+        xlink:href="{ramp(
           color.copy().domain(d3.quantize(d3.interpolate(0, 1), n))
-        ).toDataURL()}
-      />
+        ).toDataURL()}"></image>
     {:else if color.interpolator}
       <!-- sequential -->
       <image
-        x={marginLeft}
-        y={marginTop}
-        width={width - marginLeft - marginRight}
-        height={colorHeight}
-        preserveAspectRatio={"none"}
-        xlink:href={ramp(color.interpolator()).toDataURL()}
-      />
+        x="{marginLeft}"
+        y="{marginTop}"
+        width="{width - marginLeft - marginRight}"
+        height="{colorHeight}"
+        preserveAspectRatio="{'none'}"
+        xlink:href="{ramp(color.interpolator()).toDataURL()}"></image>
     {:else if color.invertExtent}
       <!-- threshold -->
       {#each color.range() as d, i}
         <rect
-          x={x(i - 1)}
-          y={marginTop}
-          width={x(i) - x(i - 1)}
-          height={colorHeight}
-          fill={d}
-        />
+          x="{x(i - 1)}"
+          y="{marginTop}"
+          width="{x(i) - x(i - 1)}"
+          height="{colorHeight}"
+          fill="{d}"></rect>
       {/each}
     {:else}
       <!-- ordinal -->
       {#each color.domain() as d, i}
         <rect
-          x={x(d)}
-          y={marginTop}
-          width={Math.max(0, x.bandwidth() - 1)}
-          height={colorHeight}
-          fill={color(d)}
-        />
+          x="{x(d)}"
+          y="{marginTop}"
+          width="{Math.max(0, x.bandwidth() - 1)}"
+          height="{colorHeight}"
+          fill="{color(d)}"></rect>
       {/each}
     {/if}
   </g>
   <g
     class="axis"
-    bind:this={axisGroup}
+    bind:this="{axisGroup}"
     transform="translate(0, {height - marginBottom})"
-    use:axis={{
+    use:axis="{{
       axis: d3.axisBottom,
       scale: x,
       ticks,
       tickFormat:
-        typeof tickFormat2 === "string" ? d3.format(tickFormat2) : tickFormat2,
+        typeof tickFormat2 === 'string' ? d3.format(tickFormat2) : tickFormat2,
       tickSize,
       tickValues: tickValues2,
-    }}
-  />
+    }}"></g>
 </g>
 
 <style>

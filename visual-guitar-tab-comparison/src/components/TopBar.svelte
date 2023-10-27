@@ -78,19 +78,27 @@
     <button on:click="{() => (showModal = true)}"> select tracks </button>
   </div>
   <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label>
-    <span>Metric</span><Dropdown />
-  </label>
+  <div>
+    <label>
+      <span>Metric</span><Dropdown />
+    </label>
+  </div>
+  <div>
+    <a
+      href="https://github.com/visvar/visual-guitar-tab-comparison"
+      target="_blank"
+      rel="noreferrer"
+      title="Code and publication at GitHub"
+    >
+      <img src="./ghIcon/github-mark.png" alt="GitHub" width="25px" />
+    </a>
+  </div>
 </nav>
 
 <style>
   nav {
     color: #111;
-  }
-
-  .container {
     display: flex;
-    width: 100%;
     height: 50px;
     align-items: center;
     border-bottom: 1px solid #888;
@@ -100,7 +108,10 @@
   .title {
     flex: 1;
     margin-left: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
+    color: #2d3136;
+    font-size: 24px;
+    text-shadow: #aaaaaa22 1px 1px 1px;
   }
   .button-group {
     flex: 1;
@@ -114,5 +125,9 @@
     display: flex;
     align-items: center;
     gap: 15px;
+  }
+
+  img {
+    margin: 6px 20px 0 0;
   }
 </style>

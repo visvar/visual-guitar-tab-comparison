@@ -59,18 +59,11 @@
       {/if}
     </div>
   </SplitPane> -->
-  <VSplitPane >
-    <top  slot="top">
+  <VSplitPane>
+    <top slot="top">
       <div class="comparison-container">
         <div class="comparison-block">
-          <h2 class="overview-header">Tab Overview</h2>
-          {#if $overviewInfo.length === 0}
-            <div>
-              <div>
-                Select a metric to see an overview for each tab
-              </div>
-            </div>
-          {:else}
+          {#if $overviewInfo.length > 0}
             {#each $overviewInfo as info}
               <Overview info="{info}" />
             {/each}
@@ -84,6 +77,7 @@
                 $legendInfo.colorScaleForLegend
               )}"
               title="{$selectedCriteria}"
+              tickSize="{4}"
             />
           {/if}
         </div>
@@ -91,19 +85,14 @@
           <TechniquesLegend />
         {/if}
       </div>
-    </top >
+    </top>
     <down slot="down">
-      <div class="track-container" >
-        <h2 class="tab-header">Tab Display</h2>
-        {#if $tabRoutes.length === 0}
-          <div class="ui placeholder segment tab-placeholder">
-            <div class="ui icon header">Open your tabs and start comparing</div>
-          </div>
-        {:else}
+      <div class="track-container">
+        {#if $tabRoutes.length > 0}
           <TabDisplay />
         {/if}
       </div>
-    </down >
+    </down>
   </VSplitPane>
 </div>
 

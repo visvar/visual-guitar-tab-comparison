@@ -31,7 +31,7 @@
 
   const createClickHandler = (barCount, infoId) => {
     return function () {
-      console.log('holaa')
+      console.log('holaa');
       // getBar(`${barCount}${infoId}`);
       getBar(`${barCount}`);
       // highlightBar(barCount)
@@ -79,7 +79,9 @@
       // const maxNumberOfBars = sequenceScore.length;
       // const maxNumberOfBars = sequence.alignment.length;
 
-      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${factorHeight}`;
+      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
+        factorHeight * 1.1
+      }`;
       // const svg = d3.select(`.overview${info.id}`).append('svg').attr('width', info.numberOfBars * factorWidth).attr('height', 20);
       const svg = d3
         .select(`.overview${info.id}`)
@@ -143,7 +145,7 @@
       const xOffset = 10;
       const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
       const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
-        factorHeight + 2
+        factorHeight * 1.1
       }`;
       const svg = d3
         .select(`.overview${info.id}`)
