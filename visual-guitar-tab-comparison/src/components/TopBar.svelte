@@ -100,6 +100,7 @@
     color: #111;
     display: flex;
     height: 50px;
+    gap: 50px;
     align-items: center;
     border-bottom: 1px solid #888;
     background: rgb(142, 184, 219);
@@ -107,11 +108,12 @@
 
   .title {
     flex: 1;
-    margin-left: 10px;
-    margin-top: 15px;
+    margin-left: 20px;
+    margin-top: 16px;
     color: #2d3136;
-    font-size: 24px;
+    font-size: 22px;
     text-shadow: #aaaaaa22 1px 1px 1px;
+    font-weight: 500;
   }
   .button-group {
     flex: 1;
