@@ -91,7 +91,7 @@
   };
 
   let noteCollections = [];
-  let colors;
+  let colors = [];
   let colorsForZoom = [];
 
   // let previousCriteria;
@@ -101,163 +101,170 @@
   //value for Beat or Note selection
   let beatNoteSelection = [];
 
-  $: {
-    if ($selectedCriteria !== $previousCriteria && $selectedCriteria != '') {
-      $previousCriteria = $selectedCriteria;
-
-      if (noteCollections.length !== 0) {
-        //Empty arrays for new settings
-        colorsForZoom = [];
-        $overviewInfo = [];
-        if ($selectedCriteria === 'similarity') {
-          const matrix = getDistanceMatrix(noteCollections);
-          colors = getColorsViaMDSFromDistances(matrix);
-        } else if ($selectedCriteria === 'density') {
-          const dVector = getDensityVector(noteCollections);
-          colors = getColorsFromCriteria(dVector, $selectedCriteria);
-          $legendInfo.minForLegend = d3.min(dVector);
-          $legendInfo.maxForLegend = d3.max(dVector);
-          $legendInfo.colorScaleForLegend = d3.interpolateBlues;
-        } else if ($selectedCriteria === 'fret span') {
-          const sVector = getFretSpans(noteCollections);
-          colors = getColorsFromCriteria(sVector, $selectedCriteria);
-          $legendInfo.minForLegend = d3.min(sVector);
-          $legendInfo.maxForLegend = d3.max(sVector);
-          $legendInfo.colorScaleForLegend = d3.interpolateYlOrRd;
-        } else if ($selectedCriteria === 'string change') {
-          const ssVector = getStringSwap(noteCollections);
-          colors = getColorsFromCriteria(ssVector, $selectedCriteria);
-          $legendInfo.minForLegend = d3.min(ssVector);
-          $legendInfo.maxForLegend = d3.max(ssVector);
-          $legendInfo.colorScaleForLegend = d3.interpolateReds;
-        } else if ($selectedCriteria === 'fret span in mm') {
-          const ssVector = getFretSpansInCm(noteCollections);
-          colors = getColorsFromCriteria(ssVector, $selectedCriteria);
-          $legendInfo.minForLegend = d3.min(ssVector);
-          $legendInfo.maxForLegend = d3.max(ssVector);
-          $legendInfo.colorScaleForLegend = d3.interpolateYlOrRd;
-        } else if ($selectedCriteria === 'techniques') {
-          colors = getTechniquesColors(noteCollections);
-          // console.log(colors, 'colooooors')
-        } else if ($selectedCriteria === '1 on 1 comparison') {
-          let markedNotes = oneOnOneComparison(noteCollections);
-          Promise.all(
-            apis.map((element, i) => {
-              let size = $originalTabSizes.find(
-                (size) => size.id === element.id
-              );
-              let api = element.content;
-              api.render();
-              return waitForSvg(svg, main).then((svg) => {
-                let colorScale = [];
-                if (i !== 0) {
-                  let colorsForMarks = markedNotes[i - 1];
-                  colorScale = getColorsForComparison(
-                    colorsForMarks,
-                    size.size
-                  );
-                  // console.log(colorScale, 'colorscaaaale')
-                  setTimeout(() => {
-                    colorizeNotes(api, colorsForMarks, element.id);
-                  }, 500);
-                } else {
-                  for (let iterator = 0; iterator < size.size; iterator++) {
-                    const innerArray = ['white'];
-                    colorScale.push(innerArray);
-                  }
+  const handleTabColoring = () => {
+    if (noteCollections.length !== 0) {
+      //Empty arrays for new settings
+      colorsForZoom = [];
+      $overviewInfo = [];
+      if ($selectedCriteria === 'similarity') {
+        const matrix = getDistanceMatrix(noteCollections);
+        colors = getColorsViaMDSFromDistances(matrix);
+      } else if ($selectedCriteria === 'density') {
+        const dVector = getDensityVector(noteCollections);
+        colors = getColorsFromCriteria(dVector, $selectedCriteria);
+        $legendInfo.minForLegend = d3.min(dVector);
+        $legendInfo.maxForLegend = d3.max(dVector);
+        $legendInfo.colorScaleForLegend = d3.interpolateBlues;
+      } else if ($selectedCriteria === 'fret span') {
+        const sVector = getFretSpans(noteCollections);
+        colors = getColorsFromCriteria(sVector, $selectedCriteria);
+        $legendInfo.minForLegend = d3.min(sVector);
+        $legendInfo.maxForLegend = d3.max(sVector);
+        $legendInfo.colorScaleForLegend = d3.interpolateYlOrRd;
+      } else if ($selectedCriteria === 'string change') {
+        const ssVector = getStringSwap(noteCollections);
+        colors = getColorsFromCriteria(ssVector, $selectedCriteria);
+        $legendInfo.minForLegend = d3.min(ssVector);
+        $legendInfo.maxForLegend = d3.max(ssVector);
+        $legendInfo.colorScaleForLegend = d3.interpolateReds;
+      } else if ($selectedCriteria === 'fret span in mm') {
+        const ssVector = getFretSpansInCm(noteCollections);
+        colors = getColorsFromCriteria(ssVector, $selectedCriteria);
+        $legendInfo.minForLegend = d3.min(ssVector);
+        $legendInfo.maxForLegend = d3.max(ssVector);
+        $legendInfo.colorScaleForLegend = d3.interpolateYlOrRd;
+      } else if ($selectedCriteria === 'techniques') {
+        colors = getTechniquesColors(noteCollections);
+        // console.log(colors, 'colooooors')
+      } else if ($selectedCriteria === '1 on 1 comparison') {
+        let markedNotes = oneOnOneComparison(noteCollections);
+        Promise.all(
+          apis.map((element, i) => {
+            let size = $originalTabSizes.find(
+              (size) => size.id === element.id
+            );
+            let api = element.content;
+            api.render();
+            return waitForSvg(svg, main).then((svg) => {
+              let colorScale = [];
+              if (i !== 0) {
+                let colorsForMarks = markedNotes[i - 1];
+                colorScale = getColorsForComparison(
+                  colorsForMarks,
+                  size.size
+                );
+                // console.log(colorScale, 'colorscaaaale')
+                setTimeout(() => {
+                  colorizeNotes(api, colorsForMarks, element.id);
+                }, 500);
+              } else {
+                for (let iterator = 0; iterator < size.size; iterator++) {
+                  const innerArray = ['white'];
+                  colorScale.push(innerArray);
                 }
+              }
+              return {
+                id: i,
+                y: api.renderer.boundsLookup._masterBarLookup.entries().next()
+                  .value[1].lineAlignedBounds.y,
+                height: api.canvasElement.element.clientHeight,
+                width: api.canvasElement.element.clientWidth,
+                numberOfBars: api.renderer.boundsLookup._masterBarLookup.size,
+                colors: colorScale,
+              };
+            });
+          })
+        )
+          .then((info) => {
+            // $overviewInfo = info;
+            // Order information of overview for better display according to the tab
+            const tempInfo = info.sort((a, b) => {
+              let indexA = $tabOrder.indexOf(a.id);
+              let indexB = $tabOrder.indexOf(b.id);
+              return indexA - indexB;
+            });
+
+            const filteredInfo = tempInfo.filter((item) =>
+              $tabOrder.includes(item.id)
+            );
+            $overviewInfo = filteredInfo;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      //Loop through all the apis and render them
+      if ($selectedCriteria !== '1 on 1 comparison') {
+        Promise.all(
+          apis.map((element, i) => {
+            let size = $originalTabSizes.find(
+              (size) => size.id === element.id
+            );
+            let api = element.content;
+            api.render();
+            return waitForSvg(svg, main).then((svg) => {
+              if ($selectedCriteria != 'techniques') {
+                const colorScale = colors.splice(0, size.size);
+                colorsForZoom.push(colorScale);
+                colorizeBars(api, svg, element.id, colorScale);
                 return {
-                  id: i,
-                  y: api.renderer.boundsLookup._masterBarLookup.entries().next()
-                    .value[1].lineAlignedBounds.y,
+                  id: element.id,
+                  y: api.renderer.boundsLookup._masterBarLookup
+                    .entries()
+                    .next().value[1].lineAlignedBounds.y,
                   height: api.canvasElement.element.clientHeight,
                   width: api.canvasElement.element.clientWidth,
-                  numberOfBars: api.renderer.boundsLookup._masterBarLookup.size,
+                  numberOfBars: size.size,
                   colors: colorScale,
                 };
-              });
-            })
-          )
-            .then((info) => {
-              // $overviewInfo = info;
-              // Order information of overview for better display according to the tab
-              const tempInfo = info.sort((a, b) => {
-                let indexA = $tabOrder.indexOf(a.id);
-                let indexB = $tabOrder.indexOf(b.id);
-                return indexA - indexB;
-              });
-
-              const filteredInfo = tempInfo.filter((item) =>
-                $tabOrder.includes(item.id)
-              );
-              $overviewInfo = filteredInfo;
-            })
-            .catch((error) => {
-              console.error(error);
+              } else {
+                // console.log(colors[i], 'colooooors')
+                colorizeBars(api, svg, element.id, []);
+                return {
+                  id: element.id,
+                  y: api.renderer.boundsLookup._masterBarLookup
+                    .entries()
+                    .next().value[1].lineAlignedBounds.y,
+                  height: api.canvasElement.element.clientHeight,
+                  width: api.canvasElement.element.clientWidth,
+                  numberOfBars: size.size,
+                  colors: colors[i],
+                };
+              }
             });
-        }
-        //Loop through all the apis and render them
-        if ($selectedCriteria !== '1 on 1 comparison') {
-          Promise.all(
-            apis.map((element, i) => {
-              let size = $originalTabSizes.find(
-                (size) => size.id === element.id
-              );
-              let api = element.content;
-              api.render();
-              return waitForSvg(svg, main).then((svg) => {
-                if ($selectedCriteria != 'techniques') {
-                  const colorScale = colors.splice(0, size.size);
-                  colorsForZoom.push(colorScale);
-                  colorizeBars(api, svg, element.id, colorScale);
-                  return {
-                    id: element.id,
-                    y: api.renderer.boundsLookup._masterBarLookup
-                      .entries()
-                      .next().value[1].lineAlignedBounds.y,
-                    height: api.canvasElement.element.clientHeight,
-                    width: api.canvasElement.element.clientWidth,
-                    numberOfBars: size.size,
-                    colors: colorScale,
-                  };
-                } else {
-                  // console.log(colors[i], 'colooooors')
-                  colorizeBars(api, svg, element.id, []);
-                  return {
-                    id: element.id,
-                    y: api.renderer.boundsLookup._masterBarLookup
-                      .entries()
-                      .next().value[1].lineAlignedBounds.y,
-                    height: api.canvasElement.element.clientHeight,
-                    width: api.canvasElement.element.clientWidth,
-                    numberOfBars: size.size,
-                    colors: colors[i],
-                  };
-                }
-              });
-            })
-          )
-            .then((info) => {
-              // $overviewInfo = info;
-              // Order information of overview for better display according to the tab
-              const tempInfo = info.sort((a, b) => {
-                let indexA = $tabOrder.indexOf(a.id);
-                let indexB = $tabOrder.indexOf(b.id);
-                return indexA - indexB;
-              });
-
-              const filteredInfo = tempInfo.filter((item) =>
-                $tabOrder.includes(item.id)
-              );
-              $overviewInfo = filteredInfo;
-            })
-            .catch((error) => {
-              console.error(error);
+          })
+        )
+          .then((info) => {
+            // $overviewInfo = info;
+            // Order information of overview for better display according to the tab
+            const tempInfo = info.sort((a, b) => {
+              let indexA = $tabOrder.indexOf(a.id);
+              let indexB = $tabOrder.indexOf(b.id);
+              return indexA - indexB;
             });
-        }
+
+            const filteredInfo = tempInfo.filter((item) =>
+              $tabOrder.includes(item.id)
+            );
+            $overviewInfo = filteredInfo;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       }
     }
   }
+
+  // $: {
+  //   if ($selectedCriteria !== $previousCriteria && $selectedCriteria != '') {
+  //     $previousCriteria = $selectedCriteria;
+  //     handleTabColoring()
+  //   }
+  // }
+
+  selectedCriteria.subscribe(() => {
+    handleTabColoring();
+  })
 
   alphaApis.subscribe((elements) => {
     if ($selectedCriteria === '1 on 1 comparison') {
@@ -391,7 +398,7 @@
           `coloredMeasure measure${note.barNumber} isChord${note.isChord} ${note.color}`
         )
         .attr('x', note.x - 3)
-        .attr('y', note.y - 18)
+        .attr('y', note.y)
         .attr('width', note.w + 5)
         .attr('height', note.h - 5)
         .attr('rx', note.isChord === '0' ? 20 : 0)
@@ -421,7 +428,7 @@
         const measures = value.realBounds;
         bars
           .append('rect')
-          .attr('class', `coloredMeasure measure${measureCount} version${id}`)
+          .attr('class', `coloredMeasure measure${key} version${id}`)
           .attr('x', measures.x)
           .attr('y', measures.y)
           .attr('width', measures.w)
@@ -759,6 +766,7 @@
     // TODO: FH commented this
     testAddBar();
     adjustBarWidth();
+    handleTabColoring();
   };
 
   const clearTabs = () => {

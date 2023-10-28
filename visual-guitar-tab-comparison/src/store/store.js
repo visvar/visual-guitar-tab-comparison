@@ -7,7 +7,7 @@ export const selectedBar = writable(1)
 
 export const overviewInfo = writable([])
 
-export const selectedCriteria = writable('')
+export const selectedCriteria = writable('similarity')
 
 export const previousCriteria = writable('')
 
@@ -29,3 +29,5 @@ export const originalTabSizes = writable([])
 export const legendInfo = writable({})
 
 export const selectedTechniques = writable([])
+
+export const selectedPanelLayout = writable('vertical')

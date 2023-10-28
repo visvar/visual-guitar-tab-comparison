@@ -8,6 +8,7 @@
     previousCriteria,
     selectedTracks,
     apiAlignments,
+    selectedPanelLayout
   } from '../store/store';
   import Dropdown from './Dropdown.svelte';
 
@@ -24,7 +25,6 @@
     }
     $tabRoutes = [];
     $selectedTracks = [];
-    $selectedCriteria = '';
     $previousCriteria = '';
     $overviewInfo = [];
     $tabOrder = [];
@@ -62,6 +62,14 @@
       reader.readAsArrayBuffer(file);
     });
   };
+
+  const handlePanelLayoutChange = () => {
+    if($selectedPanelLayout === 'horizontal') {
+      $selectedPanelLayout = 'vertical'
+    } else {
+      $selectedPanelLayout = 'horizontal'
+    }
+  }
 </script>
 
 <nav class="container">
@@ -84,6 +92,13 @@
     <label>
       <span>metric</span>
       <Dropdown />
+    </label>
+  </div>
+  <!-- svelte-ignore a11y-label-has-associated-control -->
+  <div>
+    <label>
+      <span>panel layout</span>
+      <button on:click={handlePanelLayoutChange}>{$selectedPanelLayout}</button>
     </label>
   </div>
   <div>

@@ -107,7 +107,7 @@
             .attr('fill-opacity', 0.3)
             .on(
               'click',
-              createClickHandler(realBarCount, info.id)
+              createClickHandler(i, info.id)
               // if(largestOverviewColors.colors.length === info.colors.length)
               // getBar(`${alignmentScore[i][1]}${info.id}`)
               // getBar(`${i}${info.id}`)
@@ -175,7 +175,7 @@
               })
               .attr('stroke', 'black')
               .attr('stroke-width', 0.3)
-              .on('click', createClickHandler(realBarCount, info.id));
+              .on('click', createClickHandler(i, info.id));
           });
           realBarCount = realBarCount + 1;
         }
