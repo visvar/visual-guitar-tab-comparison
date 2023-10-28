@@ -34,7 +34,6 @@
 
   const createClickHandler = (barCount, infoId) => {
     return function () {
-      console.log('holaa');
       // getBar(`${barCount}${infoId}`);
       getBar(`${barCount}`);
       // highlightBar(barCount)

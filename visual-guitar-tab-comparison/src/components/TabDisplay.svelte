@@ -443,6 +443,20 @@
           .attr('stroke-width', 1)
           .attr('fill-opacity', 0.2);
         realColorCount++;
+      } else {
+        // Colors empty bars
+        const measures = value.realBounds;
+        bars
+          .append('rect')
+          .attr('class', `coloredMeasure measure${key} version${id}`)
+          .attr('x', measures.x)
+          .attr('y', measures.y)
+          .attr('width', measures.w)
+          .attr('height', measures.h)
+          .attr('fill', 'white')
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1)
+          .attr('fill-opacity', 0.9);
       }
       measureCount++;
 
