@@ -862,7 +862,7 @@
       barWidth = defaultBarWidth;
       previousRoutes = $tabRoutes;
       previousSelectedTracks = $selectedTracks;
-      $selectedCriteria = '';
+      $selectedCriteria = 'similarity';
       $previousCriteria = '';
       $overviewInfo = [];
       $tabOrder = [];

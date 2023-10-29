@@ -26,6 +26,7 @@
     $tabRoutes = [];
     $selectedTracks = [];
     $previousCriteria = '';
+    $selectedCriteria = 'similarity';
     $overviewInfo = [];
     $tabOrder = [];
     $apiAlignments = [];

@@ -18,20 +18,6 @@
 
   const fileName = $tabRoutes.filter((d) => d.id === info.id)[0].fileName;
 
-  // let mainDiv;
-
-  const getLargestTab = (tabs) => {
-    const largestArray = tabs.reduce((prev, current) => {
-      if (current.colors.length > prev.colors.length) {
-        return current;
-      } else {
-        return prev;
-      }
-    });
-
-    return largestArray;
-  };
-
   const createClickHandler = (barCount, infoId) => {
     return function () {
       // getBar(`${barCount}${infoId}`);
@@ -45,61 +31,37 @@
     $selectedBar = bar;
   };
 
-  const extractColorsAndDashes = (str) => {
-    const regex = /(rgb\(\d{1,3}, \d{1,3}, \d{1,3}\))|-/g;
-    return str.match(regex);
-  };
 
   //Creates a bar overview based on the information from TabDisplay Component
   const createBarOverview = (info) => {
     let sequence = $apiAlignments.find((element) => element.id === info.id);
-    const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
+    d3.select(`.overview${info.id}`).selectAll('svg').remove();
+    const factorWidth = 10;
+    const factorHeight = 60;
+    const viewSize = `0 0 ${250 * factorWidth} ${
+      factorHeight * 1.1
+    }`;
+
+    const svg = d3
+      .select(`.overview${info.id}`)
+      .append('svg')
+      .attr('viewBox', viewSize);
     if (
       $selectedCriteria !== '1 on 1 comparison' &&
       $selectedCriteria !== 'techniques'
     ) {
-      // const largestOverviewColors = getLargestTab($overviewInfo)
-      // const customAligner = NWaligner({ inDelScore: -3, gapSymbol: '-',})
-      // const customResult = customAligner.align(largestOverviewColors.colors, info.colors);
-      // const sequenceScore = extractColorsAndDashes(customResult.alignedSequences[1])
-      d3.select(`.overview${info.id}`).selectAll('svg').remove();
-      const factorWidth = 10;
-      const factorHeight = 60;
-      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
-        factorHeight * 1.1
-      }`;
-      // const svg = d3.select(`.overview${info.id}`).append('svg').attr('width', info.numberOfBars * factorWidth).attr('height', 20);
-      const svg = d3
-        .select(`.overview${info.id}`)
-        .append('svg')
-        .attr('viewBox', viewSize);
-
-      // console.log(alignmentScore)
-
-      //Loop through the largets tab
-      // for(let i = 0; i < largestOverviewColors.numberOfBars; i++) {
       let realBarCount = 0;
       let measureCount = 0;
-      for (let i = 0; i < maxNumberOfBars; i++) {
-        //Get the second index of the arrays for alignment
-        // const alignedIndex = alignmentScore[i][1];
-        // console.log(alignedIndex)
-        // const alignedX = alignedIndex !== '-' ? alignedIndex * factorWidth + shift : '-';
-        // console.log(alignedX)
-        // if(alignedIndex != '-') {
+      for (let i = 0; i < sequence.alignment.length; i++) {
         if (sequence.alignment[i] != '-') {
-          // console.log(i, realBarCount)
           svg
             .append('rect')
             .attr('class', `rectOverview rectBar${measureCount}`)
             .attr('x', i * factorWidth)
-            // .attr('x', alignedX)
             .attr('y', 10)
             .attr('width', factorWidth)
             .attr('height', factorHeight - 10)
             .attr('rx', 4)
-            // .attr("fill", info.colors[alignmentScore[i][1]])
-            // .attr("fill", sequenceScore[i])
             .attr('fill', info.colors[realBarCount])
             .attr('stroke', 'black')
             .attr('stroke-width', 0.3)
@@ -107,10 +69,6 @@
             .on(
               'click',
               createClickHandler(i, info.id)
-              // if(largestOverviewColors.colors.length === info.colors.length)
-              // getBar(`${alignmentScore[i][1]}${info.id}`)
-              // getBar(`${i}${info.id}`)
-              // getBar(`${realBarCount}${info.id}`)
             );
           realBarCount = realBarCount + 1;
         }
@@ -118,19 +76,6 @@
         addBarLabel(i, svg, factorWidth);
       }
     } else {
-      d3.select(`.overview${info.id}`).selectAll('svg').remove();
-      const factorWidth = 10;
-      const factorHeight = 60;
-      const maxNumberOfBars = d3.max($overviewInfo, (d) => d.numberOfBars);
-      const viewSize = `0 0 ${maxNumberOfBars * factorWidth} ${
-        factorHeight * 1.1
-      }`;
-      const svg = d3
-        .select(`.overview${info.id}`)
-        .append('svg')
-        .attr('viewBox', viewSize);
-
-      //Loop through the largets tab
       let realBarCount = 0;
       let measureCount = 0;
       for (let i = 0; i < sequence.alignment.length; i++) {
