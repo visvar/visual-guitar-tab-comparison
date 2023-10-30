@@ -838,6 +838,7 @@
       }
       let positionedBar = classesColoredBar[1].substring('measure'.length);
 
+      // mark current bars
       const previousRects = d3.selectAll(`.rectOverview`);
       previousRects.attr('stroke', 'black').attr('stroke-width', 0.3);
 

@@ -95,7 +95,7 @@
             .attr('fill-opacity', 0.3)
             .on('click', createClickHandler(i, info.id));
         }
-        addBarLabel(i, svg, barWidth);
+        addBarLabel(i, svg, barStep);
       }
     } else {
       let realBarCount = 0;
@@ -320,13 +320,14 @@
    * Adds the bar number to every 5th bar
    * @param i
    * @param svg
-   * @param factorWidth
+   * @param barStep
    */
-  function addBarLabel(i, svg, factorWidth) {
+  function addBarLabel(i, svg, barStep) {
     if ((i + 1) % 5 == 0) {
       svg
         .append('text')
-        .attr('x', i * factorWidth + 2)
+        .attr('text-anchor', 'middle')
+        .attr('x', (i + 0.5) * barStep + 2)
         .attr('y', 8)
         .attr('font-size', 10)
         .text(i + 1);
