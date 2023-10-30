@@ -83,7 +83,6 @@
 </script>
 
 <nav class="container">
-  <TrackModal bind:showModal="{showModal}" />
   <h2 class="title">Visual Guitar Tab Comparison</h2>
   <div class="button-group">
     <input
@@ -132,23 +131,25 @@
       <img src="./ghIcon/github-mark.png" alt="GitHub" width="25px" />
     </a>
   </div>
+  <TrackModal bind:showModal="{showModal}" />
 </nav>
 
 <style>
   nav {
-    color: #111;
-    display: flex;
-    height: 50px;
-    gap: 50px;
+    height: 45px;
+    display: grid;
+    grid-template-columns: 350px 200px 280px 150px auto min-content;
     align-items: center;
+    align-content: center;
     border-bottom: 1px solid #888;
     background: rgb(142, 184, 219);
+    color: #111;
   }
 
   .title {
     flex: 1;
     margin-left: 20px;
-    margin-top: 16px;
+    margin-top: 18px;
     color: #2d3136;
     font-size: 22px;
     text-shadow: #aaaaaa22 1px 1px 1px;

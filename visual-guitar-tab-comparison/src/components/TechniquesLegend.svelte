@@ -7,9 +7,9 @@
     '#4daf4a',
     '#984ea3',
     '#ff7f00',
-    '#ffff33',
+    '#DBA800',
     'lightblue',
-    'lime',
+    'lightgreen',
     'pink',
     'gray',
     'black',
@@ -78,9 +78,9 @@
   <div>
     <input
       type="checkbox"
-      style="accent-color: #ffff33"
+      style="accent-color: #DBA800"
       checked
-      on:change="{(e) => handleCheckboxChange(e, '#ffff33')}"
+      on:change="{(e) => handleCheckboxChange(e, '#DBA800')}"
     />
     staccato
   </div>
@@ -96,9 +96,9 @@
   <div>
     <input
       type="checkbox"
-      style="accent-color: lime"
+      style="accent-color: lightgreen"
       checked
-      on:change="{(e) => handleCheckboxChange(e, 'lime')}"
+      on:change="{(e) => handleCheckboxChange(e, 'lightgreen')}"
     />
     ghost note
   </div>

@@ -52,6 +52,6 @@
 
 <style>
   .dropdown {
-    width: 50%;
+    width: 180px;
   }
 </style>

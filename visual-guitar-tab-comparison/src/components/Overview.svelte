@@ -43,7 +43,7 @@
     //   ? sequence.alignment.length
     //   : info.colors.length;
     const width = container.clientWidth - 20;
-    const height = 50;
+    const height = 40;
     const maxNumberOfBars = 89;
     const barStep = (width - 5) / maxNumberOfBars;
     const barWidth = barStep - 1;
