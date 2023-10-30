@@ -435,7 +435,7 @@
                 ? colors[realColorCount]
                 : 'white'
             )
-            .attr('stroke', 'black')
+            .attr('stroke', '#aaa')
             .attr('stroke-width', 1)
             .attr('rx', 6)
             .attr('fill-opacity', 0.2);
@@ -469,8 +469,9 @@
             'fill',
             $selectedCriteria !== 'techniques' ? colors[key] : 'white'
           )
-          .attr('stroke', 'black')
+          .attr('stroke', '#aaa')
           .attr('stroke-width', 1)
+          .attr('rx', 6)
           .attr('fill-opacity', 0.2);
       }
     }
