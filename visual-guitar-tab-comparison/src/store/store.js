@@ -31,3 +31,5 @@ export const legendInfo = writable({})
 export const selectedTechniques = writable([])
 
 export const selectedPanelLayout = writable('vertical')
+
+export const alignmentActivated = writable(false)

@@ -15,6 +15,7 @@
     apiAlignments,
     originalTabSizes,
     legendInfo,
+    alignmentActivated
   } from '../store/store';
   import {
     getDistanceMatrix,
@@ -262,6 +263,10 @@
   //   }
   // }
 
+  // alignmentActivated.subscribe(() => {
+  //   renderTabs($tabRoutes);
+  // })
+
   selectedCriteria.subscribe(() => {
     handleTabColoring();
   })
@@ -423,61 +428,64 @@
     let realColorCount = 0;
     let measureCount = 0;
     for (let [key, value] of masterBars) {
-      /* This is in case empty bars are added */
-      if (sequence.alignment[key] !== '-') {
-        const measures = value.realBounds;
-        bars
-          .append('rect')
-          .attr('class', `coloredMeasure measure${key} version${id}`)
-          .attr('x', measures.x)
-          .attr('y', measures.y)
-          .attr('width', measures.w)
-          .attr('height', measures.h)
-          .attr(
-            'fill',
-            $selectedCriteria !== 'techniques'
-              ? colors[realColorCount]
-              : 'white'
-          )
-          .attr('stroke', 'black')
-          .attr('stroke-width', 1)
-          .attr('fill-opacity', 0.2);
-        realColorCount++;
+      if ($alignmentActivated) {
+        /* This is in case empty bars are added */
+        if (sequence.alignment[key] !== '-') {
+          const measures = value.realBounds;
+          bars
+            .append('rect')
+            .attr('class', `coloredMeasure measure${key} version${id}`)
+            .attr('x', measures.x)
+            .attr('y', measures.y)
+            .attr('width', measures.w)
+            .attr('height', measures.h)
+            .attr(
+              'fill',
+              $selectedCriteria !== 'techniques'
+                ? colors[realColorCount]
+                : 'white'
+            )
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill-opacity', 0.2);
+          realColorCount++;
+        } else {
+          // Colors empty bars
+          const measures = value.realBounds;
+          bars
+            .append('rect')
+            .attr('class', `coloredMeasure measure${key} version${id}`)
+            .attr('x', measures.x)
+            .attr('y', measures.y)
+            .attr('width', measures.w)
+            .attr('height', measures.h)
+            .attr('fill', 'white')
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill-opacity', 0.9);
+        }
+        measureCount++;
       } else {
-        // Colors empty bars
+        /* This is in case empty bars are not added */
         const measures = value.realBounds;
         bars
-          .append('rect')
-          .attr('class', `coloredMeasure measure${key} version${id}`)
-          .attr('x', measures.x)
-          .attr('y', measures.y)
-          .attr('width', measures.w)
-          .attr('height', measures.h)
-          .attr('fill', 'white')
-          .attr('stroke', 'black')
-          .attr('stroke-width', 1)
-          .attr('fill-opacity', 0.9);
+            .append('rect')
+            .attr('class', `coloredMeasure measure${key} version${id}`)
+            .attr('x', measures.x)
+            .attr('y', measures.y)
+            .attr('width', measures.w)
+            .attr('height', measures.h)
+            .attr(
+              'fill',
+              $selectedCriteria !== 'techniques'
+                ? colors[key]
+                : 'white'
+            )
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('fill-opacity', 0.2);
       }
-      measureCount++;
 
-      /* This is in case empty bars are not added */
-      // const measures = value.realBounds;
-      // bars
-      //     .append('rect')
-      //     .attr('class', `coloredMeasure measure${key} version${id}`)
-      //     .attr('x', measures.x)
-      //     .attr('y', measures.y)
-      //     .attr('width', measures.w)
-      //     .attr('height', measures.h)
-      //     .attr(
-      //       'fill',
-      //       $selectedCriteria !== 'techniques'
-      //         ? colors[key]
-      //         : 'white'
-      //     )
-      //     .attr('stroke', 'black')
-      //     .attr('stroke-width', 1)
-      //     .attr('fill-opacity', 0.2);
     }
   };
 
@@ -778,7 +786,9 @@
     $apiAlignments = getAlignmetnNotes(noteCollections, colors);
     $alphaApis = apis;
     // TODO: FH commented this
-    testAddBar();
+    if ($alignmentActivated) {
+      testAddBar();
+    }
     adjustBarWidth();
     handleTabColoring();
   };
@@ -840,6 +850,11 @@
     renderTabs($tabRoutes);
     defineFirstTabOrder($tabRoutes);
     // adjustBarWidth();
+
+    alignmentActivated.subscribe(() => {
+      clearTabs();
+      renderTabs($tabRoutes);
+    })
 
     //Method to get the bar store variable and know where to navigate
     selectedBar.subscribe((bar) => {

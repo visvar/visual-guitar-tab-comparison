@@ -12,6 +12,7 @@
     apiAlignments,
     selectedTechniques,
     tabRoutes,
+    alignmentActivated
   } from '../store/store';
 
   export let info;
@@ -41,6 +42,7 @@
     const viewSize = `0 0 ${250 * factorWidth} ${
       factorHeight * 1.1
     }`;
+    const maxNumberOfBars = $alignmentActivated ? sequence.alignment.length : info.colors.length;
 
     const svg = d3
       .select(`.overview${info.id}`)
@@ -52,79 +54,144 @@
     ) {
       let realBarCount = 0;
       let measureCount = 0;
-      for (let i = 0; i < sequence.alignment.length; i++) {
-        if (sequence.alignment[i] != '-') {
+      for (let i = 0; i < maxNumberOfBars; i++) {
+        if ($alignmentActivated) {
+          if (sequence.alignment[i] != '-') {
+            svg
+              .append('rect')
+              .attr('class', `rectOverview rectBar${measureCount}`)
+              .attr('x', i * factorWidth)
+              .attr('y', 10)
+              .attr('width', factorWidth)
+              .attr('height', factorHeight - 10)
+              .attr('rx', 4)
+              .attr('fill', info.colors[realBarCount])
+              .attr('stroke', 'black')
+              .attr('stroke-width', 0.3)
+              .attr('fill-opacity', 0.3)
+              .on(
+                'click',
+                createClickHandler(i, info.id)
+              );
+            realBarCount = realBarCount + 1;
+          }
+          measureCount++;
+          addBarLabel(i, svg, factorWidth);
+        } else {
           svg
-            .append('rect')
-            .attr('class', `rectOverview rectBar${measureCount}`)
-            .attr('x', i * factorWidth)
-            .attr('y', 10)
-            .attr('width', factorWidth)
-            .attr('height', factorHeight - 10)
-            .attr('rx', 4)
-            .attr('fill', info.colors[realBarCount])
-            .attr('stroke', 'black')
-            .attr('stroke-width', 0.3)
-            .attr('fill-opacity', 0.3)
-            .on(
-              'click',
-              createClickHandler(i, info.id)
-            );
-          realBarCount = realBarCount + 1;
+              .append('rect')
+              .attr('class', `rectOverview rectBar${i}`)
+              .attr('x', i * factorWidth)
+              .attr('y', 10)
+              .attr('width', factorWidth)
+              .attr('height', factorHeight - 10)
+              .attr('rx', 4)
+              .attr('fill', info.colors[i])
+              .attr('stroke', 'black')
+              .attr('stroke-width', 0.3)
+              .attr('fill-opacity', 0.3)
+              .on(
+                'click',
+                createClickHandler(i, info.id)
+              );
+          addBarLabel(i, svg, factorWidth);
         }
-        measureCount++;
-        addBarLabel(i, svg, factorWidth);
       }
     } else {
       let realBarCount = 0;
       let measureCount = 0;
-      for (let i = 0; i < sequence.alignment.length; i++) {
-        if (sequence.alignment[i] != '-') {
-          svg
-            .append('rect')
-            .attr('class', `rectOverview rectBar${measureCount}`)
-            .attr('x', i * factorWidth)
-            .attr('y', 10)
-            .attr('width', factorWidth)
-            .attr('height', factorHeight - 10)
-            .attr('rx', 4)
-            .attr('fill', 'white')
-            .attr('stroke', 'black')
-            .attr('stroke-width', 0.3)
-            .on('click', createClickHandler(realBarCount, info.id));
-
-          //Stacks the colors inside the bars
-          const group = svg.append('g');
-          const colors = info.colors[realBarCount];
-
-          colors.forEach((color, position) => {
-            group
+      for (let i = 0; i < maxNumberOfBars; i++) {
+        if ($alignmentActivated) {
+          if (sequence.alignment[i] != '-') {
+            svg
               .append('rect')
-              .attr('class', 'technique')
+              .attr('class', `rectOverview rectBar${measureCount}`)
               .attr('x', i * factorWidth)
-              .attr('y', 10 + (position * (factorHeight - 10)) / colors.length)
+              .attr('y', 10)
               .attr('width', factorWidth)
-              .attr('height', (factorHeight - 10) / colors.length)
+              .attr('height', factorHeight - 10)
               .attr('rx', 4)
-              .attr('fill', function () {
-                if ($selectedCriteria === 'techniques') {
-                  if ($selectedTechniques.includes(color)) {
-                    return color;
+              .attr('fill', 'white')
+              .attr('stroke', 'black')
+              .attr('stroke-width', 0.3)
+              .on('click', createClickHandler(realBarCount, info.id));
+  
+            //Stacks the colors inside the bars
+            const group = svg.append('g');
+            const colors = info.colors[realBarCount];
+  
+            colors.forEach((color, position) => {
+              group
+                .append('rect')
+                .attr('class', 'technique')
+                .attr('x', i * factorWidth)
+                .attr('y', 10 + (position * (factorHeight - 10)) / colors.length)
+                .attr('width', factorWidth)
+                .attr('height', (factorHeight - 10) / colors.length)
+                .attr('rx', 4)
+                .attr('fill', function () {
+                  if ($selectedCriteria === 'techniques') {
+                    if ($selectedTechniques.includes(color)) {
+                      return color;
+                    } else {
+                      return 'white';
+                    }
                   } else {
-                    return 'white';
+                    return color;
                   }
-                } else {
-                  return color;
-                }
-              })
+                })
+                .attr('stroke', 'black')
+                .attr('stroke-width', 0.3)
+                .on('click', createClickHandler(i, info.id));
+            });
+            realBarCount = realBarCount + 1;
+          }
+          measureCount++;
+          addBarLabel(i, svg, factorWidth);
+        } else {
+          svg
+              .append('rect')
+              .attr('class', `rectOverview rectBar${i}`)
+              .attr('x', i * factorWidth)
+              .attr('y', 10)
+              .attr('width', factorWidth)
+              .attr('height', factorHeight - 10)
+              .attr('rx', 4)
+              .attr('fill', 'white')
               .attr('stroke', 'black')
               .attr('stroke-width', 0.3)
               .on('click', createClickHandler(i, info.id));
-          });
-          realBarCount = realBarCount + 1;
+  
+            //Stacks the colors inside the bars
+            const group = svg.append('g');
+            const colors = info.colors[i];
+  
+            colors.forEach((color, position) => {
+              group
+                .append('rect')
+                .attr('class', 'technique')
+                .attr('x', i * factorWidth)
+                .attr('y', 10 + (position * (factorHeight - 10)) / colors.length)
+                .attr('width', factorWidth)
+                .attr('height', (factorHeight - 10) / colors.length)
+                .attr('rx', 4)
+                .attr('fill', function () {
+                  if ($selectedCriteria === 'techniques') {
+                    if ($selectedTechniques.includes(color)) {
+                      return color;
+                    } else {
+                      return 'white';
+                    }
+                  } else {
+                    return color;
+                  }
+                })
+                .attr('stroke', 'black')
+                .attr('stroke-width', 0.3)
+                .on('click', createClickHandler(i, info.id));
+            });
+          addBarLabel(i, svg, factorWidth);
         }
-        measureCount++;
-        addBarLabel(i, svg, factorWidth);
       }
     }
   };

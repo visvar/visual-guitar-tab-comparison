@@ -8,7 +8,8 @@
     previousCriteria,
     selectedTracks,
     apiAlignments,
-    selectedPanelLayout
+    selectedPanelLayout,
+    alignmentActivated
   } from '../store/store';
   import Dropdown from './Dropdown.svelte';
 
@@ -71,6 +72,14 @@
       $selectedPanelLayout = 'horizontal'
     }
   }
+
+  const handleAlignmentMode = () => {
+    if ($alignmentActivated) {
+      $alignmentActivated = false;
+    } else {
+      $alignmentActivated = true;
+    }
+  }
 </script>
 
 <nav class="container">
@@ -102,6 +111,13 @@
       <button on:click={handlePanelLayoutChange}>{$selectedPanelLayout}</button>
     </label>
   </div>
+    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <div>
+      <label>
+        <span>alignment</span>
+        <button on:click={handleAlignmentMode}>{$alignmentActivated? 'on' : 'off'}</button>
+      </label>
+    </div>
   <div>
     <a
       href="https://github.com/visvar/visual-guitar-tab-comparison"
