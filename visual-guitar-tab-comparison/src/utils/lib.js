@@ -238,6 +238,15 @@ export function getTechniquesColors (noteCollection) {
         if (notes.isGhost) {
           barCollection.push('lime')
         }
+        if (notes.tap) {
+          barCollection.push('pink')
+        }
+        if (notes.slap) {
+          barCollection.push('gray')
+        }
+        if (notes.hasRasgueado) {
+          barCollection.push('black')
+        }
       })
       if (barCollection.length == 0) {
         tempCollection.push(['white'])

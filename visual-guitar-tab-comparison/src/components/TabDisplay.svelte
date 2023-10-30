@@ -496,7 +496,7 @@
     for (let [key, value] of bars) {
       value.bars.map((barElement) => {
         barElement.beats.map((beat, beatNumber) => {
-          // console.log(beat)
+          console.log(beat.notes)
           if (beat.notes === null) {
             totalBars = [
               ...totalBars,
@@ -515,6 +515,9 @@
                 slideOrigin: null,
                 slideTarget: null,
                 isGhost: false,
+                tap: false,
+                slap: false,
+                hasRasgueado: false,
                 isChord: '',
                 beat: beatNumber,
                 x: '',
@@ -542,6 +545,9 @@
                   slideOrigin: noteElement.note.slideOrigin,
                   slideTarget: noteElement.note.slideTarget,
                   isGhost: noteElement.note.isGhost,
+                  tap: noteElement.beatBounds.beat.tap,
+                  slap: noteElement.beatBounds.beat.slap,
+                  hasRasgueado: noteElement.beatBounds.beat.hasRasgueado,
                   isChord: '0',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -570,6 +576,9 @@
                   slideOrigin: noteElement.note.slideOrigin,
                   slideTarget: noteElement.note.slideTarget,
                   isGhost: noteElement.note.isGhost,
+                  tap: noteElement.beatBounds.beat.tap,
+                  slap: noteElement.beatBounds.beat.slap,
+                  hasRasgueado: noteElement.beatBounds.beat.hasRasgueado,
                   isChord: '1',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -606,6 +615,9 @@
         slideTarget: obj.slideTarget,
         isGhost: obj.isGhost,
         isChord: obj.isChord,
+        tap: obj.tap,
+        slap: obj.slap,
+        hasRasgueado: obj.hasRasgueado,
         beat: obj.beat,
         x: obj.x,
         y: obj.y,
