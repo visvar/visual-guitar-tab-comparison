@@ -15,7 +15,7 @@
     apiAlignments,
     originalTabSizes,
     legendInfo,
-    alignmentActivated
+    alignmentActivated,
   } from '../store/store';
   import {
     getDistanceMatrix,
@@ -141,19 +141,14 @@
         let markedNotes = oneOnOneComparison(noteCollections);
         Promise.all(
           apis.map((element, i) => {
-            let size = $originalTabSizes.find(
-              (size) => size.id === element.id
-            );
+            let size = $originalTabSizes.find((size) => size.id === element.id);
             let api = element.content;
             api.render();
             return waitForSvg(svg, main).then((svg) => {
               let colorScale = [];
               if (i !== 0) {
                 let colorsForMarks = markedNotes[i - 1];
-                colorScale = getColorsForComparison(
-                  colorsForMarks,
-                  size.size
-                );
+                colorScale = getColorsForComparison(colorsForMarks, size.size);
                 // console.log(colorScale, 'colorscaaaale')
                 setTimeout(() => {
                   colorizeNotes(api, colorsForMarks, element.id);
@@ -198,9 +193,7 @@
       if ($selectedCriteria !== '1 on 1 comparison') {
         Promise.all(
           apis.map((element, i) => {
-            let size = $originalTabSizes.find(
-              (size) => size.id === element.id
-            );
+            let size = $originalTabSizes.find((size) => size.id === element.id);
             let api = element.content;
             api.render();
             return waitForSvg(svg, main).then((svg) => {
@@ -210,9 +203,8 @@
                 colorizeBars(api, svg, element.id, colorScale);
                 return {
                   id: element.id,
-                  y: api.renderer.boundsLookup._masterBarLookup
-                    .entries()
-                    .next().value[1].lineAlignedBounds.y,
+                  y: api.renderer.boundsLookup._masterBarLookup.entries().next()
+                    .value[1].lineAlignedBounds.y,
                   height: api.canvasElement.element.clientHeight,
                   width: api.canvasElement.element.clientWidth,
                   numberOfBars: size.size,
@@ -223,9 +215,8 @@
                 colorizeBars(api, svg, element.id, []);
                 return {
                   id: element.id,
-                  y: api.renderer.boundsLookup._masterBarLookup
-                    .entries()
-                    .next().value[1].lineAlignedBounds.y,
+                  y: api.renderer.boundsLookup._masterBarLookup.entries().next()
+                    .value[1].lineAlignedBounds.y,
                   height: api.canvasElement.element.clientHeight,
                   width: api.canvasElement.element.clientWidth,
                   numberOfBars: size.size,
@@ -254,7 +245,7 @@
           });
       }
     }
-  }
+  };
 
   // $: {
   //   if ($selectedCriteria !== $previousCriteria && $selectedCriteria != '') {
@@ -269,7 +260,7 @@
 
   selectedCriteria.subscribe(() => {
     handleTabColoring();
-  })
+  });
 
   alphaApis.subscribe((elements) => {
     if ($selectedCriteria === '1 on 1 comparison') {
@@ -391,7 +382,6 @@
       .attr('width', api.canvasElement.element.clientWidth)
       .attr('height', api.canvasElement.element.clientHeight);
 
-    const masterBars = api.renderer.boundsLookup._masterBarLookup;
     console.log(id);
     console.log(sequence, 'sequence in notes');
     console.log(markedNotes);
@@ -437,7 +427,7 @@
             .attr('class', `coloredMeasure measure${key} version${id}`)
             .attr('x', measures.x)
             .attr('y', measures.y)
-            .attr('width', measures.w)
+            .attr('width', measures.w - 2)
             .attr('height', measures.h)
             .attr(
               'fill',
@@ -447,6 +437,7 @@
             )
             .attr('stroke', 'black')
             .attr('stroke-width', 1)
+            .attr('rx', 6)
             .attr('fill-opacity', 0.2);
           realColorCount++;
         } else {
@@ -457,35 +448,31 @@
             .attr('class', `coloredMeasure measure${key} version${id}`)
             .attr('x', measures.x)
             .attr('y', measures.y)
-            .attr('width', measures.w)
+            .attr('width', measures.w - 2)
             .attr('height', measures.h)
-            .attr('fill', 'white')
-            .attr('stroke', 'black')
-            .attr('stroke-width', 1)
-            .attr('fill-opacity', 0.9);
+            .attr('fill', 'white') // TODO: does not correctly hide the bar
+            .attr('stroke', 'none')
+            .attr('fill-opacity', 1);
         }
         measureCount++;
       } else {
         /* This is in case empty bars are not added */
         const measures = value.realBounds;
         bars
-            .append('rect')
-            .attr('class', `coloredMeasure measure${key} version${id}`)
-            .attr('x', measures.x)
-            .attr('y', measures.y)
-            .attr('width', measures.w)
-            .attr('height', measures.h)
-            .attr(
-              'fill',
-              $selectedCriteria !== 'techniques'
-                ? colors[key]
-                : 'white'
-            )
-            .attr('stroke', 'black')
-            .attr('stroke-width', 1)
-            .attr('fill-opacity', 0.2);
+          .append('rect')
+          .attr('class', `coloredMeasure measure${key} version${id}`)
+          .attr('x', measures.x)
+          .attr('y', measures.y)
+          .attr('width', measures.w - 2)
+          .attr('height', measures.h)
+          .attr(
+            'fill',
+            $selectedCriteria !== 'techniques' ? colors[key] : 'white'
+          )
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1)
+          .attr('fill-opacity', 0.2);
       }
-
     }
   };
 
@@ -854,7 +841,7 @@
     alignmentActivated.subscribe(() => {
       clearTabs();
       renderTabs($tabRoutes);
-    })
+    });
 
     //Method to get the bar store variable and know where to navigate
     selectedBar.subscribe((bar) => {
@@ -949,6 +936,10 @@
     // a.click();
     // document.body.removeChild(a);
   };
+
+  const handleMouseWheel = (evt) => {
+    wrapper.scrollLeft += 2 * evt.deltaY;
+  };
 </script>
 
 <div class="main-container">
@@ -1011,6 +1002,7 @@
       class="tab-container"
       bind:this="{wrapper}"
       on:scroll="{setBarIndicator}"
+      on:mousewheel="{handleMouseWheel}"
     >
       <div bind:this="{main}"></div>
       <!-- <div data-tex="true" bind:this='{customMain}'>1.3</div> -->
