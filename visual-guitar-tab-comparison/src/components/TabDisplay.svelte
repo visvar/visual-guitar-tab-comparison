@@ -939,6 +939,7 @@
   };
 
   const handleMouseWheel = (evt) => {
+    evt.preventDefault();
     wrapper.scrollLeft += 2 * evt.deltaY;
   };
 </script>
