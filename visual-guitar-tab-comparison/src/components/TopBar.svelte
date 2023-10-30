@@ -9,7 +9,7 @@
     selectedTracks,
     apiAlignments,
     selectedPanelLayout,
-    alignmentActivated
+    alignmentActivated,
   } from '../store/store';
   import Dropdown from './Dropdown.svelte';
 
@@ -66,12 +66,12 @@
   };
 
   const handlePanelLayoutChange = () => {
-    if($selectedPanelLayout === 'horizontal') {
-      $selectedPanelLayout = 'vertical'
+    if ($selectedPanelLayout === 'horizontal') {
+      $selectedPanelLayout = 'vertical';
     } else {
-      $selectedPanelLayout = 'horizontal'
+      $selectedPanelLayout = 'horizontal';
     }
-  }
+  };
 
   const handleAlignmentMode = () => {
     if ($alignmentActivated) {
@@ -79,7 +79,7 @@
     } else {
       $alignmentActivated = true;
     }
-  }
+  };
 </script>
 
 <nav class="container">
@@ -107,17 +107,21 @@
   <!-- svelte-ignore a11y-label-has-associated-control -->
   <div>
     <label>
-      <span>panel layout</span>
-      <button on:click={handlePanelLayoutChange}>{$selectedPanelLayout}</button>
+      <span>alignment</span>
+      <button on:click="{handleAlignmentMode}"
+        >{$alignmentActivated ? 'on' : 'off'}</button
+      >
     </label>
   </div>
-    <!-- svelte-ignore a11y-label-has-associated-control -->
-    <div>
-      <label>
-        <span>alignment</span>
-        <button on:click={handleAlignmentMode}>{$alignmentActivated? 'on' : 'off'}</button>
-      </label>
-    </div>
+  <!-- svelte-ignore a11y-label-has-associated-control -->
+  <div>
+    <label>
+      <span>layout</span>
+      <button on:click="{handlePanelLayoutChange}"
+        >{$selectedPanelLayout}</button
+      >
+    </label>
+  </div>
   <div>
     <a
       href="https://github.com/visvar/visual-guitar-tab-comparison"

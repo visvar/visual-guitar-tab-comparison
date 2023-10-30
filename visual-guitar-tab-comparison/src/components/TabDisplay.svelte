@@ -484,7 +484,7 @@
     for (let [key, value] of bars) {
       value.bars.map((barElement) => {
         barElement.beats.map((beat, beatNumber) => {
-          console.log(beat.notes)
+          console.log(beat.notes);
           if (beat.notes === null) {
             totalBars = [
               ...totalBars,
