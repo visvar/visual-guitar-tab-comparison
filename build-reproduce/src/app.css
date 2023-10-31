@@ -1,0 +1,74 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  /* font-weight: 400; */
+
+  color: #213547;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #747bff;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  /* place-items: center; */
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 1.2em;
+  line-height: 1.1;
+}
+
+#app {
+  width: 100%;
+  min-width: 800px;
+  /* min-height: 100%; */
+}
+
+button,
+input,
+select {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  margin: 2px;
+  padding: 0.1em 0.2em;
+  font-size: 0.9em;
+  font-weight: 400;
+  font-family: inherit;
+  background-color: #ddd;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover,
+input:hover,
+select:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}

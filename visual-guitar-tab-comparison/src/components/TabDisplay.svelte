@@ -1,7 +1,7 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
-  // import * as alphaTab from '@coderline/alphatab';
-  import * as alphaTab from '../../node_modules/@coderline/alphatab/dist/alphaTab.mjs';
+  import * as alphaTab from '@coderline/alphatab';
+  // import * as alphaTab from '../../node_modules/@coderline/alphatab/dist/alphaTab.mjs';
   import * as d3 from 'd3';
   import {
     selectedBar,
