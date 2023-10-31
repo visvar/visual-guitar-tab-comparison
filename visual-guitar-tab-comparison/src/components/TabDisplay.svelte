@@ -1,6 +1,7 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
-  import * as alphaTab from '@coderline/alphatab';
+  // import * as alphaTab from '@coderline/alphatab';
+  import * as alphaTab from '../../node_modules/@coderline/alphatab/dist/alphaTab.mjs';
   import * as d3 from 'd3';
   import {
     selectedBar,
@@ -67,6 +68,8 @@
     },
     core: {
       fontDirectory: './alphatabFont/',
+      // useWorkers: false, // breaks vite dev
+      // scriptFile: '', // TODO: might fix build fail?
       includeNoteBounds: true,
     },
     notation: {
