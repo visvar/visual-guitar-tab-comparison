@@ -3,6 +3,7 @@ import { fretMeasurements } from './variables'
 import * as druid from '@saehrimnir/druidjs'
 import * as d3 from 'd3'
 import { NWaligner } from 'seqalign'
+import _ from 'lodash';
 
 export function getDistanceMatrix (noteCollection) {
   // console.log(noteCollection)
@@ -274,18 +275,35 @@ function containsObject (obj, list) {
 
 function getOneOnOneColor (obj, list) {
   var i
+  
+  // console.log(obj, 'this is the object')
+  // console.log(list, 'this is the list')
   for (i = 0; i < list.length; i++) {
-    if (list[i].string === obj.string && list[i].fret !== obj.fret && list[i].beat === obj.beat && list[i].isChord === obj.isChord) {
-      return 'orange'
+    // if (list[i].string === obj.string && list[i].fret !== obj.fret && list[i].beat === obj.beat && list[i].isChord === obj.isChord) {
+    //   return 'orange'
+    // }
+    if (list[i].isChord === '1' && obj.isChord === '1') {
+      if (list[i].string === obj.string && list[i].fret !== obj.fret && list[i].beat === obj.beat) {
+        return 'blue'
+      }
+    } else {
+      if (list[i].string !== obj.string && list[i].fret !== obj.fret && list[i].beat === obj.beat) {
+        return 'blue'
+      }
     }
-    if (list[i].string !== obj.string && list[i].fret !== obj.fret && list[i].beat === obj.beat && list[i].isChord === obj.isChord) {
-      return 'blue'
-    }
-    if (list[i].string === obj.string && list[i].fret === obj.fret && list[i].beat === obj.beat && list[i].isChord === obj.isChord) {
-      return ''
-    }
+    // if (list[i].string === obj.string && list[i].fret === obj.fret && list[i].beat === obj.beat && list[i].isChord === obj.isChord) {
+    //   return ''
+    // }
+    // if (_.isEqual(list[i], obj)) {
+    //   return 'blue'
+    // }
   }
   return ''
+  // if (!list.includes(obj)) {
+  //   return 'blue';
+  // } else {
+  //   return '';
+  // }
 }
 
 export function getColorsForComparison (collection, length) {

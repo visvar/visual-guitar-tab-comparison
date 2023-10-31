@@ -17,12 +17,6 @@
                     </svg>
                 </td>
                 <td> added in alternate version </td>
-                <td>
-                    <svg width="10" height="10">
-                        <rect width="10" height="10" fill="orange"></rect>
-                    </svg>
-                </td>
-                <td> modified in alternate version </td>
                 <!-- <td>
                 <svg width="10" height="10">
                     <rect width="10" height="10" fill="red"/>

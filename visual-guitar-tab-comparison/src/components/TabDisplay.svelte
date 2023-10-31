@@ -484,7 +484,6 @@
     for (let [key, value] of bars) {
       value.bars.map((barElement) => {
         barElement.beats.map((beat, beatNumber) => {
-          console.log(beat.notes);
           if (beat.notes === null) {
             totalBars = [
               ...totalBars,
@@ -664,14 +663,65 @@
       notesForOne.push(notes);
     });
     let markedNotes = oneOnOneComparison(notesForOne);
-    apis.forEach((api, i) => {
-      waitForSvg(svg, main).then((svg) => {
-        if (i !== 0) {
-          let colorsForMarks = markedNotes[i - 1];
-          colorizeNotes(api.content, colorsForMarks, api.id);
-        }
+    // apis.forEach((api, i) => {
+    //   waitForSvg(svg, main).then((svg) => {
+    //     if (i !== 0) {
+    //       let colorsForMarks = markedNotes[i - 1];
+    //       colorizeNotes(api.content, colorsForMarks, api.id);
+    //     }
+    //   });
+    // });
+
+    ////////////////////////////////////////////////////////////
+    Promise.all(
+      apis.map((element, i) => {
+        let size = $originalTabSizes.find((size) => size.id === element.id);
+        let api = element.content;
+        api.render();
+        return waitForSvg(svg, main).then((svg) => {
+          let colorScale = [];
+          if (i !== 0) {
+            let colorsForMarks = markedNotes[i - 1];
+            colorScale = getColorsForComparison(colorsForMarks, size.size);
+            // console.log(colorScale, 'colorscaaaale')
+            setTimeout(() => {
+              colorizeNotes(api, colorsForMarks, element.id);
+            }, 500);
+          } else {
+            for (let iterator = 0; iterator < size.size; iterator++) {
+              const innerArray = ['white'];
+              colorScale.push(innerArray);
+            }
+          }
+          return {
+            id: i,
+            y: api.renderer.boundsLookup._masterBarLookup.entries().next()
+              .value[1].lineAlignedBounds.y,
+            height: api.canvasElement.element.clientHeight,
+            width: api.canvasElement.element.clientWidth,
+            numberOfBars: api.renderer.boundsLookup._masterBarLookup.size,
+            colors: colorScale,
+          };
+        });
+      })
+    )
+      .then((info) => {
+        // $overviewInfo = info;
+        // Order information of overview for better display according to the tab
+        const tempInfo = info.sort((a, b) => {
+          let indexA = $tabOrder.indexOf(a.id);
+          let indexB = $tabOrder.indexOf(b.id);
+          return indexA - indexB;
+        });
+
+        const filteredInfo = tempInfo.filter((item) =>
+          $tabOrder.includes(item.id)
+        );
+        $overviewInfo = filteredInfo;
+      })
+      .catch((error) => {
+        console.error(error);
       });
-    });
   };
 
   // Works with alphaTab version 1.3.0-alpha.677
