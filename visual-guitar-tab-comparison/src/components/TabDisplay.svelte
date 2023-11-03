@@ -776,11 +776,11 @@
 
   const storeMaxNumberOfBars = () => {
     if ($alignmentActivated) {
-      $maxNumberOfBars = d3.max($apiAlignments, d => d.alignment.length);
+      $maxNumberOfBars = d3.max($apiAlignments, (d) => d.alignment.length);
     } else {
-      $maxNumberOfBars = d3.max(noteCollections, d => d.length);
-    }    
-  }
+      $maxNumberOfBars = d3.max(noteCollections, (d) => d.length);
+    }
+  };
 
   const renderTabs = async (routes) => {
     // const apiSettings2 = {
@@ -847,7 +847,6 @@
     let colors = getColorsViaMDSFromDistances(matrix);
     $apiAlignments = getAlignmetnNotes(noteCollections, colors);
     $alphaApis = apis;
-    // TODO: FH commented this
     if ($alignmentActivated) {
       testAddBar();
     }
@@ -1002,16 +1001,16 @@
     });
   };
 
-  // TODO: FH: commented for now to fix bugs
+  // TODO: FH: re-introduce this feature
   const testDownload = () => {
-    // const exporter = new alphaTab.exporter.Gp7Exporter();
-    // const data = exporter.export(customApi.score, customApi.settings);
-    // const a = document.createElement('a');
-    // a.download = `${customApi?.score?.title || 'File'}.gp`;
-    // a.href = URL.createObjectURL(new Blob([data]));
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
+    const exporter = new alphaTab.exporter.Gp7Exporter();
+    const data = exporter.export(customApi.score, customApi.settings);
+    const a = document.createElement('a');
+    a.download = `${customApi?.score?.title || 'File'}.gp`;
+    a.href = URL.createObjectURL(new Blob([data]));
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const handleMouseWheel = (evt) => {

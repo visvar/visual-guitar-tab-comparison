@@ -12,6 +12,7 @@
     selectedTechniques,
     tabRoutes,
     alignmentActivated,
+    maxNumberOfBars,
   } from '../store/store';
 
   export let info;
@@ -44,8 +45,7 @@
     //   : info.colors.length;
     const width = container.clientWidth - 20;
     const height = 40;
-    const maxNumberOfBars = 89;
-    const barStep = (width - 5) / maxNumberOfBars;
+    const barStep = (width - 5) / $maxNumberOfBars;
     const barWidth = barStep - 1;
     const barHeight = height - 12;
 
@@ -55,13 +55,16 @@
       .attr('width', width)
       .attr('height', height)
       .attr('viewBox', `0 0 ${width} ${height}`);
+
+    // draw bars
     if (
       $selectedCriteria !== '1 on 1 comparison' &&
       $selectedCriteria !== 'techniques'
     ) {
+      // scalar metrics
       let realBarCount = 0;
       let measureCount = 0;
-      for (let i = 0; i < maxNumberOfBars; i++) {
+      for (let i = 0; i < $maxNumberOfBars; i++) {
         if ($alignmentActivated) {
           if (sequence.alignment[i] != '-') {
             svg
@@ -71,12 +74,12 @@
               .attr('y', 10)
               .attr('width', barWidth)
               .attr('height', barHeight)
-              .attr('rx', 4)
               .attr('fill', info.colors[realBarCount])
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
               .attr('fill-opacity', 0.3)
               .on('click', createClickHandler(i, info.id));
+            // TODO: add title with metric's value
+            // .append('title')
+            // .text();
             realBarCount = realBarCount + 1;
           }
           measureCount++;
@@ -88,19 +91,17 @@
             .attr('y', 10)
             .attr('width', barWidth)
             .attr('height', barHeight)
-            .attr('rx', 4)
             .attr('fill', info.colors[i])
-            .attr('stroke', '#888')
-            .attr('stroke-width', 0.5)
             .attr('fill-opacity', 0.3)
             .on('click', createClickHandler(i, info.id));
         }
         addBarLabel(i, svg, barStep);
       }
     } else {
+      // 1 on 1 or techniques
       let realBarCount = 0;
       let measureCount = 0;
-      for (let i = 0; i < maxNumberOfBars; i++) {
+      for (let i = 0; i < $maxNumberOfBars; i++) {
         if ($alignmentActivated) {
           if (sequence.alignment[i] != '-') {
             svg
@@ -110,10 +111,7 @@
               .attr('y', 10)
               .attr('width', barWidth)
               .attr('height', barHeight)
-              .attr('rx', 4)
               .attr('fill', 'white')
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
               .on('click', createClickHandler(realBarCount, info.id));
 
             //Stacks the colors inside the bars
@@ -128,7 +126,6 @@
                 .attr('y', 10 + (position * barHeight) / colors.length)
                 .attr('width', barWidth)
                 .attr('height', barHeight / colors.length)
-                .attr('rx', 4)
                 .attr('fill', () => {
                   if ($selectedCriteria === 'techniques') {
                     if ($selectedTechniques.includes(color)) {
@@ -140,8 +137,6 @@
                     return color;
                   }
                 })
-                .attr('stroke', '#888')
-                .attr('stroke-width', 0.5)
                 .on('click', createClickHandler(i, info.id));
             });
             realBarCount++;
@@ -155,16 +150,12 @@
             .attr('y', 10)
             .attr('width', barWidth)
             .attr('height', barHeight)
-            .attr('rx', 4)
             .attr('fill', 'white')
-            .attr('stroke', '#888')
-            .attr('stroke-width', 0.5)
             .on('click', createClickHandler(i, info.id));
 
           //Stacks the colors inside the bars
           const group = svg.append('g');
           const colors = info.colors[i];
-
           colors.forEach((color, position) => {
             group
               .append('rect')
@@ -173,7 +164,6 @@
               .attr('y', 10 + (position * barHeight) / colors.length)
               .attr('width', barWidth)
               .attr('height', barHeight / colors.length - 1)
-              .attr('rx', 4)
               .attr('fill', function () {
                 if ($selectedCriteria === 'techniques') {
                   if ($selectedTechniques.includes(color)) {
@@ -185,14 +175,18 @@
                   return color;
                 }
               })
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
               .on('click', createClickHandler(i, info.id));
           });
         }
         addBarLabel(i, svg, barStep);
       }
     }
+    // common style attributes
+    svg
+      .selectAll('rect')
+      .attr('stroke', '#888')
+      .attr('stroke-width', 0.5)
+      .attr('rx', 4);
   };
 
   const checkFirstPosition = (previousOrder) => {
