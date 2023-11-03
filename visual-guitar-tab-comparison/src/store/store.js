@@ -33,3 +33,5 @@ export const selectedTechniques = writable([])
 export const selectedPanelLayout = writable('vertical')
 
 export const alignmentActivated = writable(false)
+
+export const maxNumberOfBars = writable(0)

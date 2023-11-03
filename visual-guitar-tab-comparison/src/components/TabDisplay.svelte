@@ -17,6 +17,7 @@
     originalTabSizes,
     legendInfo,
     alignmentActivated,
+    maxNumberOfBars,
   } from '../store/store';
   import {
     getDistanceMatrix,
@@ -773,6 +774,14 @@
     }
   };
 
+  const storeMaxNumberOfBars = () => {
+    if ($alignmentActivated) {
+      $maxNumberOfBars = d3.max($apiAlignments, d => d.alignment.length);
+    } else {
+      $maxNumberOfBars = d3.max(noteCollections, d => d.length);
+    }    
+  }
+
   const renderTabs = async (routes) => {
     // const apiSettings2 = {
     //   ...settings, // copy the settings object
@@ -844,6 +853,7 @@
     }
     adjustBarWidth();
     handleTabColoring();
+    storeMaxNumberOfBars();
   };
 
   const clearTabs = () => {
