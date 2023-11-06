@@ -8,6 +8,8 @@ You need Guitar Pro files, which you can find online (some websites require a fr
 
 See our [ISMIR 2023 late-breaking demo poster](https://ismir2023program.ismir.net/lbd_357.html) for more information.
 
+You might also be interested in our [ISMIR paper on visual sheet music overviews](https://github.com/visvar/sheetmusic-overviews/)!
+
 ## Setup
 
 - Install NodeJs and npm.
