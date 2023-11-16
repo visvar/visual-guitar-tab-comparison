@@ -76,6 +76,9 @@
               .attr('height', barHeight)
               .attr('fill', info.colors[realBarCount])
               .attr('fill-opacity', 0.3)
+              .attr('stroke', '#888')
+              .attr('stroke-width', 0.5)
+              .attr('rx', 4)
               .on('click', createClickHandler(i, info.id));
             // TODO: add title with metric's value
             // .append('title')
@@ -93,6 +96,9 @@
             .attr('height', barHeight)
             .attr('fill', info.colors[i])
             .attr('fill-opacity', 0.3)
+            .attr('stroke', '#888')
+            .attr('stroke-width', 0.5)
+            .attr('rx', 4)
             .on('click', createClickHandler(i, info.id));
         }
         addBarLabel(i, svg, barStep);
@@ -112,6 +118,9 @@
               .attr('width', barWidth)
               .attr('height', barHeight)
               .attr('fill', 'white')
+              .attr('stroke', '#888')
+              .attr('stroke-width', 0.5)
+              .attr('rx', 4)
               .on('click', createClickHandler(realBarCount, info.id));
 
             //Stacks the colors inside the bars
@@ -137,6 +146,9 @@
                     return color;
                   }
                 })
+                .attr('stroke', '#888')
+                .attr('stroke-width', 0.5)
+                .attr('rx', 4)
                 .on('click', createClickHandler(i, info.id));
             });
             realBarCount++;
@@ -151,6 +163,9 @@
             .attr('width', barWidth)
             .attr('height', barHeight)
             .attr('fill', 'white')
+            .attr('stroke', '#888')
+            .attr('stroke-width', 0.5)
+            .attr('rx', 4)
             .on('click', createClickHandler(i, info.id));
 
           //Stacks the colors inside the bars
@@ -175,18 +190,17 @@
                   return color;
                 }
               })
+              .attr('stroke', '#888')
+              .attr('stroke-width', 0.5)
+              .attr('rx', 4)
               .on('click', createClickHandler(i, info.id));
+            // .append('title')
+            // .text(color);
           });
         }
         addBarLabel(i, svg, barStep);
       }
     }
-    // common style attributes
-    svg
-      .selectAll('rect')
-      .attr('stroke', '#888')
-      .attr('stroke-width', 0.5)
-      .attr('rx', 4);
   };
 
   const checkFirstPosition = (previousOrder) => {

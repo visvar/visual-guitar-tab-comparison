@@ -400,7 +400,7 @@
         .attr('y', note.y)
         .attr('width', note.w + 5)
         .attr('height', note.h - 5)
-        .attr('rx', note.isChord === '0' ? 20 : 0)
+        .attr('rx', note.isChord === '0' ? 20 : 4)
         .attr('fill', note.color)
         .attr('stroke', note.color)
         .attr('fill-opacity', 0.1);
@@ -900,12 +900,11 @@
       }
       let positionedBar = classesColoredBar[1].substring('measure'.length);
 
-      // mark current bars
+      // mark current bars for highlighting
       const previousRects = d3.selectAll(`.rectOverview`);
-      previousRects.attr('stroke', 'black').attr('stroke-width', 0.3);
-
+      previousRects.attr('stroke-width', 0.3);
       const currentRects = d3.selectAll(`.rectBar${positionedBar}`);
-      currentRects.attr('stroke', 'steelblue').attr('stroke-width', 4);
+      currentRects.attr('stroke-width', 4);
     }, 500);
   };
 
