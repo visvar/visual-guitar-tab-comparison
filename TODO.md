@@ -1,13 +1,7 @@
 # TODO
 
-- fix vite build not working due to alphatab's worker
-
-- direct comparison
-  - different colors for "number of beats changed" and "something within a beat changed"
-  - or color-code the levenshtein distance between old and new
-
 - overview
-  - show all bars currently visible in tab view, not only the first
+  - mark all bars currently visible in tab view, not only the first
   - make overview responsive to height change
     - keep in mind legends have different height (hardcode their heights?)
   - add section labels
@@ -16,13 +10,20 @@
 
 - tab
   - add semi-transparent rects to bars that have been added for alignment, to make them less salient
+    - for some reason this does currently not work
+
+- direct comparison
+  - color bars in tab view as well?
+    - encode the levenshtein distance between old and new?
+  - different colors for "number of beats changed" and "something within a beat changed"
+
+- techniques
+  - add vibrato and whammybar (hasWhammyBar), stored in alphaTab's model within each beat
 
 - make legend more compact by putting label next to color gradient
 
-- add contributing.md
-
-## Future
-
 - audio playback
+
 - multi-sequence alignment
+
 - re-implement combining tabs and exporting
