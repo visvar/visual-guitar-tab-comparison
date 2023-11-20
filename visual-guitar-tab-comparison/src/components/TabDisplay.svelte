@@ -29,7 +29,7 @@
     getFretSpansInCm,
     oneOnOneComparison,
     getColorsForComparison,
-    getAlignmetnNotes,
+    getAlignmentNotes,
     getTechniquesColors,
   } from '../utils/lib';
 
@@ -45,7 +45,7 @@
   const zoomScale = 10;
 
   // Bar width variables
-  const defaultBarWidth = 300;
+  const defaultBarWidth = 250;
   let barWidth = defaultBarWidth;
   const barWidthScale = 25;
 
@@ -828,6 +828,8 @@
             //   notes
             // ];
             $dataModel = [...$dataModel, api.tracks[0].staves[0].bars];
+            console.log($dataModel);
+
             // Resolve the promise with the note collection
             resolve(notes);
             $originalTabSizes = [
@@ -849,7 +851,7 @@
     // console.log($dataModel)
     const matrix = getDistanceMatrix(noteCollections);
     let colors = getColorsViaMDSFromDistances(matrix);
-    $apiAlignments = getAlignmetnNotes(noteCollections, colors);
+    $apiAlignments = getAlignmentNotes(noteCollections, colors);
     $alphaApis = apis;
     if ($alignmentActivated) {
       testAddBar();

@@ -43,7 +43,7 @@
     // const maxNumberOfBars = $alignmentActivated
     //   ? sequence.alignment.length
     //   : info.colors.length;
-    const width = container.clientWidth - 20;
+    const width = (container?.clientWidth ?? 1000) - 20;
     const height = 40;
     const barStep = (width - 5) / $maxNumberOfBars;
     const barWidth = barStep - 1;
@@ -127,30 +127,32 @@
             const group = svg.append('g');
             const colors = info.colors[realBarCount];
 
-            colors.forEach((color, position) => {
-              group
-                .append('rect')
-                .attr('class', 'technique')
-                .attr('x', i * barStep + 2)
-                .attr('y', 10 + (position * barHeight) / colors.length)
-                .attr('width', barWidth)
-                .attr('height', barHeight / colors.length)
-                .attr('fill', () => {
-                  if ($selectedCriteria === 'techniques') {
-                    if ($selectedTechniques.includes(color)) {
-                      return color;
+            if (colors) {
+              colors.forEach((color, position) => {
+                group
+                  .append('rect')
+                  .attr('class', 'technique')
+                  .attr('x', i * barStep + 2)
+                  .attr('y', 10 + (position * barHeight) / colors.length)
+                  .attr('width', barWidth)
+                  .attr('height', barHeight / colors.length)
+                  .attr('fill', () => {
+                    if ($selectedCriteria === 'techniques') {
+                      if ($selectedTechniques.includes(color)) {
+                        return color;
+                      } else {
+                        return 'white';
+                      }
                     } else {
-                      return 'white';
+                      return color;
                     }
-                  } else {
-                    return color;
-                  }
-                })
-                .attr('stroke', '#888')
-                .attr('stroke-width', 0.5)
-                .attr('rx', 4)
-                .on('click', createClickHandler(i, info.id));
-            });
+                  })
+                  .attr('stroke', '#888')
+                  .attr('stroke-width', 0.5)
+                  .attr('rx', 4)
+                  .on('click', createClickHandler(i, info.id));
+              });
+            }
             realBarCount++;
           }
           measureCount++;

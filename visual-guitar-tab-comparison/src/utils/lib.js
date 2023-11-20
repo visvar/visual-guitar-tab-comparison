@@ -3,12 +3,10 @@ import { fretMeasurements } from './variables'
 import * as druid from '@saehrimnir/druidjs'
 import * as d3 from 'd3'
 import { NWaligner } from 'seqalign'
-import _ from 'lodash';
+import _ from 'lodash'
 
 export function getDistanceMatrix (noteCollection) {
-  // console.log(noteCollection)
   let finalCollection = []
-
   noteCollection.forEach((collectionTrack) => {
     let tempCollection = []
     collectionTrack.forEach((bar) => {
@@ -20,14 +18,9 @@ export function getDistanceMatrix (noteCollection) {
     })
     finalCollection.push(tempCollection)
   })
-
   //**************************** */
-
-  // console.log(finalCollection)
   const flattenedArr = finalCollection.flat()
-
   const distanceMatrix = Array(flattenedArr.length).fill().map(() => Array(flattenedArr.length).fill(0))
-
   for (let i = 0; i < flattenedArr.length; i++) {
     for (let j = i; j < flattenedArr.length; j++) {
       const distance = StringBased.Levenshtein.levenshtein(flattenedArr[i], flattenedArr[j])
@@ -35,14 +28,14 @@ export function getDistanceMatrix (noteCollection) {
       distanceMatrix[j][i] = distance
     }
   }
-
-  // console.log(distanceMatrix)
-
-  // console.log(Utils.normalizeNdArrayNegative(distanceMatrix))
-
   return Utils.normalizeNdArrayNegative(distanceMatrix)
 }
 
+/**
+ * Uses dimensionality reduction (MDS) to map distances to colors
+ * @param {*} distMatrix
+ * @returns {string[]} colors
+ */
 export function getColorsViaMDSFromDistances (distMatrix) {
   if (distMatrix.length === 0) { return [] }
   // DR
@@ -57,15 +50,11 @@ export function getColorsViaMDSFromDistances (distMatrix) {
 
 export function getDensityVector (noteCollection) {
   let finalCollection = []
-
   noteCollection.forEach((collectionTrack) => {
     collectionTrack.forEach((bar) => {
       finalCollection.push(bar.length)
     })
   })
-
-  // console.log(finalCollection);
-
   return finalCollection
 }
 
@@ -75,14 +64,9 @@ export function getFretSpans (collection) {
   collection.forEach(collectionTrack => {
     collectionTrack.forEach(bar => {
       let filteredData = bar.filter(d => typeof d.fret === 'number' && d.fret !== 0)
-      let min = d3.min(filteredData, d => d.fret)
-      let max = d3.max(filteredData, d => d.fret)
+      let min = d3.min(filteredData, d => +d.fret)
+      let max = d3.max(filteredData, d => +d.fret)
       let fretSpan
-      // if (min === max) {
-      //   fretSpan = 1
-      // } else {
-      //   fretSpan = max - min;
-      // }
       fretSpan = max - min
       if (!fretSpan) {
         fretSpan = 0
@@ -123,8 +107,8 @@ export function getFretSpansInCm (collection) {
   collection.forEach(collectionTrack => {
     collectionTrack.forEach(bar => {
       let filteredData = bar.filter(d => typeof d.fret === 'number' && d.fret !== 0)
-      let min = d3.min(filteredData, d => d.fret)
-      let max = d3.max(filteredData, d => d.fret)
+      let min = d3.min(filteredData, d => +d.fret)
+      let max = d3.max(filteredData, d => +d.fret)
       let fretSpan = 0
       fretMeasurements.map((element) => {
         if (element.fret >= min && element.fret <= max) {
@@ -152,16 +136,13 @@ export function oneOnOneComparison (collection) {
   //https://stackoverflow.com/questions/39023154/how-to-make-a-color-gradient-bar-using-d3js
 
   const firstCollection = collection[0]
+  const rest = collection.slice(1)
 
-  const res = collection.slice(1)
-  // console.log(firstCollection, 'primerita')
-  // console.log(res, 'las demas');
-
-  for (let i = 0; i < res.length; i++) {
+  for (let i = 0; i < rest.length; i++) {
     let extraNotes = []
-    if (firstCollection.length <= res[i].length) {
+    if (firstCollection.length <= rest[i].length) {
       for (let j = 0; j < firstCollection.length; j++) {
-        let barElement = res[i][j]
+        let barElement = rest[i][j]
         barElement.map((element) => {
           if (typeof element.fret === 'number') {
             let color = getOneOnOneColor(element, firstCollection[j])
@@ -180,8 +161,8 @@ export function oneOnOneComparison (collection) {
         // })
       }
     } else {
-      for (let j = 0; j < res[i].length; j++) {
-        let barElement = res[i][j]
+      for (let j = 0; j < rest[i].length; j++) {
+        let barElement = rest[i][j]
         barElement.map((element) => {
           if (typeof element.fret === 'number') {
             let color = getOneOnOneColor(element, firstCollection[j])
@@ -214,6 +195,7 @@ export function getTechniquesColors (noteCollection) {
     let tempCollection = []
     collectionTrack.forEach((bar) => {
       let barCollection = []
+
       bar.map((notes) => {
         if (notes.bendStyle > 0 || notes.bendType > 0) {
           barCollection.push('#e41a1c')
@@ -252,6 +234,7 @@ export function getTechniquesColors (noteCollection) {
       if (barCollection.length == 0) {
         tempCollection.push(['white'])
       } else {
+        // keep colors unique and sorted
         let uniqueColors = [...new Set(barCollection)]
         tempCollection.push(uniqueColors.sort())
       }
@@ -275,7 +258,7 @@ function containsObject (obj, list) {
 
 function getOneOnOneColor (obj, list) {
   var i
-  
+
   // console.log(obj, 'this is the object')
   // console.log(list, 'this is the list')
   for (i = 0; i < list.length; i++) {
@@ -354,8 +337,7 @@ export function getColorsFromCriteria (array, criteria) {
   }
 }
 
-export function getAlignmetnNotes (collection, colors) {
-  // console.log(collection)
+export function getAlignmentNotes (collection, colors) {
   let finalCollection = []
   let finalColors = []
 
@@ -375,10 +357,6 @@ export function getAlignmetnNotes (collection, colors) {
     let colorScale = colors.splice(0, collection.length)
     finalColors.push(colorScale)
   })
-
-  // console.log(finalCollection)
-  // console.log(finalColors)
-
   const largestArray = finalColors.reduce((prev, current) => {
     if (current.length > prev.length) {
       return current
@@ -411,13 +389,11 @@ export function areArraysEqual (arr1, arr2) {
   if (arr1.length !== arr2.length) {
     return false
   }
-
   for (let i = 0; i < arr1.length; i++) {
     if (!deepEqual(arr1[i], arr2[i])) {
       return false
     }
   }
-
   return true
 }
 
@@ -425,24 +401,19 @@ function deepEqual (obj1, obj2) {
   if (obj1 === obj2) {
     return true
   }
-
   if (typeof obj1 !== "object" || typeof obj2 !== "object" || obj1 === null || obj2 === null) {
     return false
   }
-
   const keys1 = Object.keys(obj1)
   const keys2 = Object.keys(obj2)
-
   if (keys1.length !== keys2.length) {
     return false
   }
-
   for (const key of keys1) {
     if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
       return false
     }
   }
-
   return true
 }
 
@@ -517,9 +488,7 @@ function deepEqual (obj1, obj2) {
 export function nwAlignment (colors1, colors2) {
   const gapPenalty = -1 // Penalty for gaps
   const mismatchPenalty = -1 // Penalty for color mismatches
-
   const matrix = []
-
   // Initialize the matrix with zeros
   for (let i = 0; i <= colors1.length; i++) {
     matrix[i] = []
@@ -527,7 +496,6 @@ export function nwAlignment (colors1, colors2) {
       matrix[i][j] = 0
     }
   }
-
   // Fill in the matrix
   for (let i = 1; i <= colors1.length; i++) {
     for (let j = 1; j <= colors2.length; j++) {
@@ -539,18 +507,15 @@ export function nwAlignment (colors1, colors2) {
       matrix[i][j] = Math.max(diagonal, top, left)
     }
   }
-
   // Trace back the alignment
   const alignment = []
   let i = 0
   let j = 0
-
   while (i < colors1.length && j < colors2.length) {
     const current = matrix[i + 1][j + 1]
     const diagonal = matrix[i][j]
     const top = matrix[i][j + 1]
     const left = matrix[i + 1][j]
-
     if (current === diagonal + (colors1[i] === colors2[j] ? 1 : mismatchPenalty)) {
       alignment.push([i, j])
       i++
@@ -563,16 +528,13 @@ export function nwAlignment (colors1, colors2) {
       i++
     }
   }
-
   while (i < colors1.length) {
     alignment.push([i, '-'])
     i++
   }
-
   while (j < colors2.length) {
     alignment.push(['-', j])
     j++
   }
-
   return alignment
 }
