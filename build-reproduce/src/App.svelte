@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import * as alphaTab from '@coderline/alphatab';
+  // import * as alphaTab from '@coderline/alphatab';
 
   const settings = {
     display: {

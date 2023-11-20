@@ -1,6 +1,6 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
-  import * as alphaTab from '@coderline/alphatab';
+  // import * as alphaTab from '@coderline/alphatab';
   // import * as alphaTab from '../../node_modules/@coderline/alphatab/dist/alphaTab.mjs';
   import * as d3 from 'd3';
   import {
@@ -59,6 +59,10 @@
   //Settings to render AlphaTab
   const settings = {
     // file: "src/tabs/guns3.gp5",
+    importer: {
+      // TODO: maybe useful for multiple voices
+      // mergePartGroupsInMusicXml: true
+    },
     display: {
       layoutMode: 'horizontal',
       stretchForce: 1,
