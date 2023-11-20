@@ -5,13 +5,13 @@
   import Overview from './components/Overview.svelte';
   import SplitPane from './components/SplitPane.svelte';
   import { VSplitPane } from 'svelte-split-pane';
-  import TechniquesLegend from './components/TechniquesLegend.svelte';
+  import TechniquesLegend from './components/legends/TechniquesLegend.svelte';
   import {
     overviewInfo,
     tabRoutes,
     selectedCriteria,
     legendInfo,
-    selectedPanelLayout
+    selectedPanelLayout,
   } from './store/store';
   import ColorLegend from './components/legends/ColorLegend.svelte';
 </script>

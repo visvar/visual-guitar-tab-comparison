@@ -3,7 +3,7 @@ import { fretMeasurements } from './variables'
 import * as druid from '@saehrimnir/druidjs'
 import * as d3 from 'd3'
 import { NWaligner } from 'seqalign'
-import _ from 'lodash'
+// import _ from 'lodash'
 
 export function getDistanceMatrix (noteCollection) {
   let finalCollection = []
@@ -230,8 +230,15 @@ export function getTechniquesColors (noteCollection) {
         if (notes.hasRasgueado) {
           barCollection.push('black')
         }
+        if (notes.hasWhammyBar) {
+          barCollection.push('#ccc')
+        }
+        if (notes.hasVibrato) {
+          barCollection.push('#333')
+        }
       })
       if (barCollection.length == 0) {
+        // does not contain techniques
         tempCollection.push(['white'])
       } else {
         // keep colors unique and sorted

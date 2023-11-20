@@ -1,5 +1,5 @@
 <script>
-  import { selectedTechniques } from '../store/store';
+  import { selectedTechniques } from '../../store/store';
   import { onMount } from 'svelte';
   let selectedColors = [
     '#e41a1c',
@@ -13,6 +13,8 @@
     'pink',
     'gray',
     'black',
+    '#ccc',
+    '#333',
   ];
 
   const handleCheckboxChange = (event, color) => {
@@ -128,6 +130,24 @@
       on:change="{(e) => handleCheckboxChange(e, 'black')}"
     />
     rasgueado
+  </div>
+  <!-- <div>
+    <input
+      type="checkbox"
+      style="accent-color: #ccc"
+      checked
+      on:change="{(e) => handleCheckboxChange(e, '#ccc')}"
+    />
+    whammy bar
+  </div> -->
+  <div>
+    <input
+      type="checkbox"
+      style="accent-color: #333"
+      checked
+      on:change="{(e) => handleCheckboxChange(e, '#333')}"
+    />
+    vibrato
   </div>
 </div>
 

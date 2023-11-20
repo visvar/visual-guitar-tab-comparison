@@ -1,11 +1,9 @@
 # TODO
 
 - overview
-  - mark all bars currently visible in tab view, not only the first
   - make overview responsive to height change
     - keep in mind legends have different height (hardcode their heights?)
   - add section labels
-  - fix gray bars at the end when alignment is turned off
   - add `<title>` with metric value so legend is not that necessary
 
 - tab

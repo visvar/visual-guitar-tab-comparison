@@ -5,6 +5,8 @@ export const tabRoutes = writable([])
 // For navigation purposes on tabDisplay component
 export const selectedBar = writable(1)
 
+export const visibleBarIndices = writable([0, 0])
+
 export const overviewInfo = writable([])
 
 export const selectedCriteria = writable('similarity')

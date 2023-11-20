@@ -1,7 +1,7 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
+  // TODO: imported in index.html to fix vite build
   // import * as alphaTab from '@coderline/alphatab';
-  // import * as alphaTab from '../../node_modules/@coderline/alphatab/dist/alphaTab.mjs';
   import * as d3 from 'd3';
   import {
     selectedBar,
@@ -18,6 +18,7 @@
     legendInfo,
     alignmentActivated,
     maxNumberOfBars,
+    visibleBarIndices,
   } from '../store/store';
   import {
     getDistanceMatrix,
@@ -56,9 +57,8 @@
   let apis = [];
   let customApi;
 
-  //Settings to render AlphaTab
+  // Settings to render AlphaTab
   const settings = {
-    // file: "src/tabs/guns3.gp5",
     importer: {
       // TODO: maybe useful for multiple voices
       // mergePartGroupsInMusicXml: true
@@ -180,7 +180,6 @@
           })
         )
           .then((info) => {
-            // $overviewInfo = info;
             // Order information of overview for better display according to the tab
             const tempInfo = info.sort((a, b) => {
               let indexA = $tabOrder.indexOf(a.id);
@@ -255,17 +254,7 @@
     }
   };
 
-  // $: {
-  //   if ($selectedCriteria !== $previousCriteria && $selectedCriteria != '') {
-  //     $previousCriteria = $selectedCriteria;
-  //     handleTabColoring()
-  //   }
-  // }
-
-  // alignmentActivated.subscribe(() => {
-  //   renderTabs($tabRoutes);
-  // })
-
+  // re-color when metric changes
   selectedCriteria.subscribe(() => {
     handleTabColoring();
   });
@@ -306,7 +295,6 @@
         })
       )
         .then((info) => {
-          // $overviewInfo = info;
           // Order information of overview for better display according to the tab
           const tempInfo = info.sort((a, b) => {
             let indexA = $tabOrder.indexOf(a.id);
@@ -328,12 +316,14 @@
   const waitForSvg = (svg, element) => {
     return new Promise((resolve) => {
       const intervalId = setInterval(() => {
-        svg = element.getElementsByTagName('svg')[0];
+        if (element && element.getElementsByTagName) {
+          svg = element.getElementsByTagName('svg')[0];
+        }
         if (svg) {
           clearInterval(intervalId);
           resolve(svg);
         }
-      }, 1000);
+      }, 500);
     });
   };
 
@@ -356,7 +346,6 @@
       beatsRects._groups[0].forEach((element) => {
         let rect = d3.select(element);
         let color = [...rect._groups[0][0].classList].slice(-1)[0];
-        // console.log(color)
         rect
           .attr('fill', color)
           .attr('stroke', color)
@@ -377,22 +366,15 @@
           .attr('fill-opacity', 0.1);
       });
     }
-    // let notesBeatsSvvgElement = d3.selectAll('.colorednotebeat');
-
-    // console.log(notesBeatsSvvgElement)
   };
 
   const colorizeNotes = (api, markedNotes, id) => {
-    let sequence = $apiAlignments.find((element) => element.id === id);
+    // let sequence = $apiAlignments.find((element) => element.id === id);
     const bars = d3
       .select(api.canvasElement.element)
       .append('svg')
       .attr('width', api.canvasElement.element.clientWidth)
       .attr('height', api.canvasElement.element.clientHeight);
-
-    console.log(id);
-    console.log(sequence, 'sequence in notes');
-    console.log(markedNotes);
     markedNotes.map((note, i) => {
       bars
         .append('rect')
@@ -411,7 +393,7 @@
     });
   };
 
-  //Method to colorize bars
+  // Method to colorize bars
   const colorizeBars = (api, svg, id, colors) => {
     let sequence = $apiAlignments.find((element) => element.id === id);
     const bars = d3
@@ -485,14 +467,18 @@
     }
   };
 
+  /**
+   * Get notes by bar, with all techniques and other information
+   * @param bars
+   */
   const getNotes = (bars) => {
     // console.log(bars)
     let totalBars = [];
-
     for (let [key, value] of bars) {
-      value.bars.map((barElement) => {
-        barElement.beats.map((beat, beatNumber) => {
+      value.bars.forEach((barElement) => {
+        barElement.beats.forEach((beat, beatNumber) => {
           if (beat.notes === null) {
+            // no notes
             totalBars = [
               ...totalBars,
               {
@@ -513,6 +499,7 @@
                 tap: false,
                 slap: false,
                 hasRasgueado: false,
+                hasWhammyBar: false,
                 isChord: '',
                 beat: beatNumber,
                 x: '',
@@ -522,7 +509,8 @@
               },
             ];
           } else if (beat.notes.length === 1) {
-            beat.notes.map((noteElement) => {
+            // single note in beat
+            beat.notes.forEach((noteElement) => {
               totalBars = [
                 ...totalBars,
                 {
@@ -543,6 +531,8 @@
                   tap: noteElement.beatBounds.beat.tap,
                   slap: noteElement.beatBounds.beat.slap,
                   hasRasgueado: noteElement.beatBounds.beat.hasRasgueado,
+                  hasWhammyBar: noteElement.beatBounds.beat.hasWhammyBar,
+                  hasVibrato: noteElement.beatBounds.beat.vibrato > 0,
                   isChord: '0',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -553,7 +543,8 @@
               ];
             });
           } else {
-            beat.notes.map((noteElement) => {
+            // multiples notes in beat - harmony/chord
+            beat.notes.forEach((noteElement) => {
               totalBars = [
                 ...totalBars,
                 {
@@ -574,6 +565,8 @@
                   tap: noteElement.beatBounds.beat.tap,
                   slap: noteElement.beatBounds.beat.slap,
                   hasRasgueado: noteElement.beatBounds.beat.hasRasgueado,
+                  hasWhammyBar: noteElement.beatBounds.beat.hasWhammyBar,
+                  hasVibrato: noteElement.beatBounds.beat.vibrato > 0,
                   isChord: '1',
                   beat: beatNumber,
                   x: noteElement.noteHeadBounds.x,
@@ -613,6 +606,8 @@
         tap: obj.tap,
         slap: obj.slap,
         hasRasgueado: obj.hasRasgueado,
+        hasWhammyBar: obj.hasWhammyBar,
+        hasVibrato: obj.vibrato,
         beat: obj.beat,
         x: obj.x,
         y: obj.y,
@@ -620,13 +615,7 @@
         h: obj.h,
       });
     }
-    // console.log(groups)
     return groups;
-  };
-
-  // Sort info of tabs in decreasing order based on numberOfBars
-  const orderTabInfo = (overview) => {
-    return overview.sort((a, b) => b.numberOfBars - a.numberOfBars);
   };
 
   const handleZoom = (operation) => {
@@ -671,16 +660,6 @@
       notesForOne.push(notes);
     });
     let markedNotes = oneOnOneComparison(notesForOne);
-    // apis.forEach((api, i) => {
-    //   waitForSvg(svg, main).then((svg) => {
-    //     if (i !== 0) {
-    //       let colorsForMarks = markedNotes[i - 1];
-    //       colorizeNotes(api.content, colorsForMarks, api.id);
-    //     }
-    //   });
-    // });
-
-    ////////////////////////////////////////////////////////////
     Promise.all(
       apis.map((element, i) => {
         let size = $originalTabSizes.find((size) => size.id === element.id);
@@ -691,7 +670,6 @@
           if (i !== 0) {
             let colorsForMarks = markedNotes[i - 1];
             colorScale = getColorsForComparison(colorsForMarks, size.size);
-            // console.log(colorScale, 'colorscaaaale')
             setTimeout(() => {
               colorizeNotes(api, colorsForMarks, element.id);
             }, 500);
@@ -714,14 +692,12 @@
       })
     )
       .then((info) => {
-        // $overviewInfo = info;
         // Order information of overview for better display according to the tab
         const tempInfo = info.sort((a, b) => {
           let indexA = $tabOrder.indexOf(a.id);
           let indexB = $tabOrder.indexOf(b.id);
           return indexA - indexB;
         });
-
         const filteredInfo = tempInfo.filter((item) =>
           $tabOrder.includes(item.id)
         );
@@ -778,6 +754,9 @@
     }
   };
 
+  /**
+   * Write the maximum number of bars for all versions to the store
+   */
   const storeMaxNumberOfBars = () => {
     if ($alignmentActivated) {
       $maxNumberOfBars = d3.max($apiAlignments, (d) => d.alignment.length);
@@ -787,18 +766,12 @@
   };
 
   const renderTabs = async (routes) => {
-    // const apiSettings2 = {
-    //   ...settings, // copy the settings object
-    //   file: "src/tabs/guns3.gp5", // set the file property to the current route
-    // };
     routes.forEach((route, i) => {
       const apiSettings = {
         ...settings, // copy the settings object
         // file: route, // set the file property to the current route
       };
       api = new alphaTab.AlphaTabApi(main, apiSettings);
-      // console.log(customApi, 'custooom')
-      console.log(route);
       api.load(route.buffer);
       $selectedTracks.forEach((element) => {
         if (i === element.api) {
@@ -807,12 +780,12 @@
           ]);
         }
       });
+      // push the new api to the apis array
       apis.push({
         id: route.id,
         content: api,
-      }); // push the new api to the apis array
+      });
     });
-
     // Create an array to hold all the promises returned by the forEach loop
     const promises = apis.map((element, i) => {
       let api = element.content;
@@ -820,16 +793,8 @@
         api.renderFinished.on(() => {
           waitForSvg(svg, main).then((svg) => {
             // Get the notes and store them in the notesArray array
-            // const notes = getNotes(api.tracks[0].staves[0].bars);
             const notes = getNotes(api.renderer.boundsLookup._masterBarLookup);
-            // let notesArray = [];
-            // notesArray = [
-            //   ...notesArray,
-            //   notes
-            // ];
             $dataModel = [...$dataModel, api.tracks[0].staves[0].bars];
-            console.log($dataModel);
-
             // Resolve the promise with the note collection
             resolve(notes);
             $originalTabSizes = [
@@ -846,9 +811,6 @@
 
     // Wait for all the promises to resolve
     noteCollections = await Promise.all(promises);
-    // console.log(noteCollections, 'collection complete')
-
-    // console.log($dataModel)
     const matrix = getDistanceMatrix(noteCollections);
     let colors = getColorsViaMDSFromDistances(matrix);
     $apiAlignments = getAlignmentNotes(noteCollections, colors);
@@ -875,21 +837,20 @@
   };
 
   let timer = null;
-  const setBarIndicator = () => {
+  /**
+   * Update the bars currently visible in the tab view, so the overview can draw the indicator
+   */
+  const updateVisibleBarsinStore = () => {
     if (timer !== null) {
       clearTimeout(timer);
     }
-    timer = setTimeout(function () {
+    timer = setTimeout(() => {
       const coloredBars = d3.selectAll(`.coloredMeasure`).nodes();
-
       if (coloredBars.length <= 0) {
         return;
       }
-
       const visibleBars = coloredBars.filter((element) => {
-        // const bbox = element.getBBox();
         const rect = element.getBoundingClientRect();
-        // console.log(rect.left, rect.right, rect.top, rect.bottom)
         return (
           rect.left <= window.innerWidth && // Check if it's within the horizontal viewport
           rect.right >= 0 && // Check if it's within the horizontal viewport
@@ -897,40 +858,29 @@
           rect.bottom >= 0 // Check if it's within the vertical viewport
         );
       });
-
-      let classesColoredBar;
-      if ($selectedCriteria === '1 on 1 comparison') {
-        classesColoredBar = Array.from(visibleBars[0].classList);
-      } else {
-        classesColoredBar = Array.from(visibleBars[3].classList);
-      }
-      let positionedBar = classesColoredBar[1].substring('measure'.length);
-
-      // mark current bars for highlighting
-      const previousRects = d3.selectAll(`.rectOverview`);
-      previousRects.attr('stroke-width', 0.3);
-      const currentRects = d3.selectAll(`.rectBar${positionedBar}`);
-      currentRects.attr('stroke-width', 4);
+      const barIndices = visibleBars.map((d) => {
+        const measureClass = [...d.classList].filter((c) =>
+          c.startsWith('measure')
+        )[0];
+        return +measureClass.substring(7);
+      });
+      $visibleBarIndices = d3.extent(barIndices);
     }, 500);
   };
 
   onMount(async () => {
     renderTabs($tabRoutes);
     defineFirstTabOrder($tabRoutes);
-    // adjustBarWidth();
-
     alignmentActivated.subscribe(() => {
       clearTabs();
       renderTabs($tabRoutes);
     });
-
-    //Method to get the bar store variable and know where to navigate
+    // Method to get the bar store variable and know where to navigate
     selectedBar.subscribe((bar) => {
       const el = document.querySelector(`.measure${bar}`);
-      if (!el) return;
-      el.scrollIntoView({
-        behavior: 'smooth',
-      });
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   });
 
@@ -957,13 +907,15 @@
     }
   });
 
+  /**
+   * Add bars for alignment
+   */
   const testAddBar = () => {
     apis.map((api) => {
       let sequence = $apiAlignments.find((element) => element.id === api.id);
       let referenceBar = api.content.tracks[0].staves[0].bars[1];
       let totalBars = api.content.tracks[0].staves[0].bars;
       let reversedBars = totalBars.reverse();
-
       let referenceScore = referenceBar.staff.track.score;
       referenceScore.masterBars = [];
       let referenceStaff = referenceBar.staff;
@@ -1018,6 +970,10 @@
     document.body.removeChild(a);
   };
 
+  /**
+   * Turn scrolling into horizontal scrolling
+   * @param evt
+   */
   const handleMouseWheel = (evt) => {
     evt.preventDefault();
     wrapper.scrollLeft += 2 * evt.deltaY;
@@ -1083,7 +1039,7 @@
     <div
       class="tab-container"
       bind:this="{wrapper}"
-      on:scroll="{setBarIndicator}"
+      on:scroll="{updateVisibleBarsinStore}"
       on:mousewheel="{handleMouseWheel}"
     >
       <div bind:this="{main}"></div>

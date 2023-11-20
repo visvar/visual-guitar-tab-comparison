@@ -1,6 +1,7 @@
 <script>
   import * as d3 from 'd3';
   import { arrayMoveImmutable } from 'array-move';
+  import _ from 'lodash';
   import { afterUpdate } from 'svelte';
   import {
     selectedBar,
@@ -13,6 +14,7 @@
     tabRoutes,
     alignmentActivated,
     maxNumberOfBars,
+    visibleBarIndices,
   } from '../store/store';
 
   export let info;
@@ -22,11 +24,7 @@
   const fileName = $tabRoutes.filter((d) => d.id === info.id)[0].fileName;
 
   const createClickHandler = (barCount, infoId) => {
-    return () => {
-      // getBar(`${barCount}${infoId}`);
-      getBar(`${barCount}`);
-      // highlightBar(barCount)
-    };
+    return () => getBar(`${barCount}`);
   };
 
   //Gets the clicked bar and updates the store
@@ -36,18 +34,14 @@
 
   //Creates a bar overview based on the information from TabDisplay Component
   const createBarOverview = (info) => {
+    console.log('draw');
     let sequence = $apiAlignments.find((element) => element.id === info.id);
     d3.select(`.overview${info.id}`).selectAll('svg').remove();
-
-    // TODO: use actual max number for all versions
-    // const maxNumberOfBars = $alignmentActivated
-    //   ? sequence.alignment.length
-    //   : info.colors.length;
     const width = (container?.clientWidth ?? 1000) - 20;
-    const height = 40;
+    const height = 42;
     const barStep = (width - 5) / $maxNumberOfBars;
     const barWidth = barStep - 1;
-    const barHeight = height - 12;
+    const barHeight = height - 14;
 
     const svg = d3
       .select(`.overview${info.id}`)
@@ -55,6 +49,19 @@
       .attr('width', width)
       .attr('height', height)
       .attr('viewBox', `0 0 ${width} ${height}`);
+
+    // indicator showing the currently visible bars in tab view
+    svg
+      .append('rect')
+      .attr('class', 'scroll-indicator')
+      .attr('fill', '#ddd')
+      .attr('rx', 4)
+      .attr('x', $visibleBarIndices[0] * barStep + 2)
+      .attr(
+        'width',
+        ($visibleBarIndices[1] - $visibleBarIndices[0] + 1) * barStep
+      )
+      .attr('height', height);
 
     // draw bars
     if (
@@ -67,39 +74,41 @@
       for (let i = 0; i < $maxNumberOfBars; i++) {
         if ($alignmentActivated) {
           if (sequence.alignment[i] != '-') {
-            svg
-              .append('rect')
-              .attr('class', `rectOverview rectBar${measureCount}`)
-              .attr('x', i * barStep + 2)
-              .attr('y', 10)
-              .attr('width', barWidth)
-              .attr('height', barHeight)
-              .attr('fill', info.colors[realBarCount])
-              .attr('fill-opacity', 0.3)
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
-              .attr('rx', 4)
-              .on('click', createClickHandler(i, info.id));
-            // TODO: add title with metric's value
-            // .append('title')
-            // .text();
+            if (info.colors[i] !== undefined) {
+              svg
+                .append('rect')
+                .attr('class', `rectOverview rectBar${measureCount}`)
+                .attr('x', i * barStep + 2)
+                .attr('y', 10)
+                .attr('width', barWidth)
+                .attr('height', barHeight)
+                .attr('fill', info.colors[realBarCount])
+                .attr('stroke', '#888')
+                .attr('stroke-width', 0.5)
+                .attr('rx', 4)
+                .on('click', createClickHandler(i, info.id));
+              // TODO: add title with metric's value
+              // .append('title')
+              // .text();
+            }
             realBarCount = realBarCount + 1;
           }
           measureCount++;
         } else {
-          svg
-            .append('rect')
-            .attr('class', `rectOverview rectBar${i}`)
-            .attr('x', i * barStep + 2)
-            .attr('y', 10)
-            .attr('width', barWidth)
-            .attr('height', barHeight)
-            .attr('fill', info.colors[i])
-            .attr('fill-opacity', 0.3)
-            .attr('stroke', '#888')
-            .attr('stroke-width', 0.5)
-            .attr('rx', 4)
-            .on('click', createClickHandler(i, info.id));
+          if (info.colors[i] !== undefined) {
+            svg
+              .append('rect')
+              .attr('class', `rectOverview rectBar${i}`)
+              .attr('x', i * barStep + 2)
+              .attr('y', 10)
+              .attr('width', barWidth)
+              .attr('height', barHeight)
+              .attr('fill', info.colors[i])
+              .attr('stroke', '#888')
+              .attr('stroke-width', 0.5)
+              .attr('rx', 4)
+              .on('click', createClickHandler(i, info.id));
+          }
         }
         addBarLabel(i, svg, barStep);
       }
@@ -110,24 +119,10 @@
       for (let i = 0; i < $maxNumberOfBars; i++) {
         if ($alignmentActivated) {
           if (sequence.alignment[i] != '-') {
-            svg
-              .append('rect')
-              .attr('class', `rectOverview rectBar${measureCount}`)
-              .attr('x', i * barStep + 2)
-              .attr('y', 10)
-              .attr('width', barWidth)
-              .attr('height', barHeight)
-              .attr('fill', 'white')
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
-              .attr('rx', 4)
-              .on('click', createClickHandler(realBarCount, info.id));
-
+            const colors = info.colors[realBarCount];
             //Stacks the colors inside the bars
             const group = svg.append('g');
-            const colors = info.colors[realBarCount];
-
-            if (colors) {
+            if (colors && colors.forEach) {
               colors.forEach((color, position) => {
                 group
                   .append('rect')
@@ -157,48 +152,37 @@
           }
           measureCount++;
         } else {
-          svg
-            .append('rect')
-            .attr('class', `rectOverview rectBar${i}`)
-            .attr('x', i * barStep + 2)
-            .attr('y', 10)
-            .attr('width', barWidth)
-            .attr('height', barHeight)
-            .attr('fill', 'white')
-            .attr('stroke', '#888')
-            .attr('stroke-width', 0.5)
-            .attr('rx', 4)
-            .on('click', createClickHandler(i, info.id));
-
           //Stacks the colors inside the bars
-          const group = svg.append('g');
           const colors = info.colors[i];
-          colors.forEach((color, position) => {
-            group
-              .append('rect')
-              .attr('class', 'technique')
-              .attr('x', i * barStep + 2)
-              .attr('y', 10 + (position * barHeight) / colors.length)
-              .attr('width', barWidth)
-              .attr('height', barHeight / colors.length - 1)
-              .attr('fill', function () {
-                if ($selectedCriteria === 'techniques') {
-                  if ($selectedTechniques.includes(color)) {
-                    return color;
+          const group = svg.append('g');
+          if (colors && colors.forEach) {
+            colors.forEach((color, position) => {
+              group
+                .append('rect')
+                .attr('class', 'technique')
+                .attr('x', i * barStep + 2)
+                .attr('y', 10 + (position * barHeight) / colors.length)
+                .attr('width', barWidth)
+                .attr('height', barHeight / colors.length - 1)
+                .attr('fill', function () {
+                  if ($selectedCriteria === 'techniques') {
+                    if ($selectedTechniques.includes(color)) {
+                      return color;
+                    } else {
+                      return 'white';
+                    }
                   } else {
-                    return 'white';
+                    return color;
                   }
-                } else {
-                  return color;
-                }
-              })
-              .attr('stroke', '#888')
-              .attr('stroke-width', 0.5)
-              .attr('rx', 4)
-              .on('click', createClickHandler(i, info.id));
-            // .append('title')
-            // .text(color);
-          });
+                })
+                .attr('stroke', '#888')
+                .attr('stroke-width', 0.5)
+                .attr('rx', 4)
+                .on('click', createClickHandler(i, info.id));
+              // .append('title')
+              // .text(color);
+            });
+          }
         }
         addBarLabel(i, svg, barStep);
       }
@@ -216,22 +200,21 @@
     }
   };
 
+  /**
+   * Change version order by moving one down
+   */
   const moveOverviewUp = () => {
     const mainTabsDiv = document.querySelector('.alphaTab');
     const childrenOfTabs = mainTabsDiv.childNodes;
-
     const childOverview = document.querySelector(`.wrappedOverview${info.id}`);
     const parentOverview = childOverview.parentNode;
     const index = Array.prototype.indexOf.call(
       parentOverview.children,
       childOverview
     );
-
     const comparisonDiv = document.querySelector('.comparison-block');
     const childrenComparisonDiv = comparisonDiv.children;
-
     const previousOrder = $tabOrder;
-
     if (index != 1) {
       childrenComparisonDiv[index].parentNode.insertBefore(
         childrenComparisonDiv[index],
@@ -244,26 +227,24 @@
       const tempOrder = arrayMoveImmutable($tabOrder, index - 1, index - 2);
       $tabOrder = tempOrder;
     }
-
     checkFirstPosition(previousOrder);
   };
 
+  /**
+   * Change version order by moving one down
+   */
   const moveOverviewDown = () => {
     const mainTabsDiv = document.querySelector('.alphaTab');
     const childrenOfTabs = mainTabsDiv.childNodes;
-
     const childOverview = document.querySelector(`.wrappedOverview${info.id}`);
     const parentOverview = childOverview.parentNode;
     const index = Array.prototype.indexOf.call(
       parentOverview.children,
       childOverview
     );
-
     const comparisonDiv = document.querySelector('.comparison-block');
     const childrenComparisonDiv = comparisonDiv.children;
-
     const previousOrder = $tabOrder;
-
     if (index != $overviewInfo.length) {
       childrenComparisonDiv[index + 1].parentNode.insertBefore(
         childrenComparisonDiv[index + 1],
@@ -276,37 +257,30 @@
       const tempOrder = arrayMoveImmutable($tabOrder, index - 1, index);
       $tabOrder = tempOrder;
     }
-
     checkFirstPosition(previousOrder);
   };
 
+  /**
+   * Remove a version
+   */
   const removeTab = () => {
     if (!confirm('Remove this tab?')) {
       return;
     }
     const mainTabsDiv = document.querySelector('.alphaTab');
     const childrenOfTabs = mainTabsDiv.childNodes;
-
     const childOverview = document.querySelector(`.wrappedOverview${info.id}`);
     const parentOverview = childOverview.parentNode;
     const index = Array.prototype.indexOf.call(
       parentOverview.children,
       childOverview
     );
-
     const comparisonDiv = document.querySelector('.comparison-block');
     const childrenComparisonDiv = comparisonDiv.children;
-
     const previousOrder = $tabOrder;
-    // const anotherOrder = previousOrder;
-    // console.log(previousOrder, '1');
     comparisonDiv.removeChild(childrenComparisonDiv[index]);
     mainTabsDiv.removeChild(childrenOfTabs[index - 1]);
     $tabOrder.splice(index - 1, 1);
-
-    // console.log($tabOrder, '2');
-    // console.log(previousOrder, '3');
-    // console.log(anotherOrder, '4');
     if ($tabOrder[0] !== previousOrder[0]) {
       const tempInfo = $alphaApis.sort((a, b) => {
         let indexA = $tabOrder.indexOf(a.id);
@@ -317,13 +291,17 @@
     }
   };
 
+  // TODO: use lodash _.debounce to avoid rendering multiple times
+  // https://docs-lodash.com/v4/debounce/
+  const debounced = _.debounce(createBarOverview, 500, {
+    maxWait: 1000,
+    leading: true,
+    trailing: false,
+  });
   const draw = () => {
-    console.log('draw');
-    setTimeout(() => {
-      createBarOverview(info);
-    }, 500);
+    debounced(info);
+    // setTimeout(() => createBarOverview(info), 500);
   };
-
   afterUpdate(draw);
 
   /**
@@ -374,6 +352,7 @@
   .grid {
     width: 100%;
     display: flex;
+    align-items: center;
   }
 
   .buttons {
@@ -394,6 +373,5 @@
   }
   .container {
     flex: 1;
-    margin-right: 10px;
   }
 </style>
